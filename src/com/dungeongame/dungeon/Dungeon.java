@@ -11,7 +11,7 @@ public class Dungeon {
     
     public Dungeon() {
 	walls = new Layer();
-	tempRoom = new Room(0, 0, false, false, true, false);
+	tempRoom = new Room(0, 0, true, true, true, true);
 	init();
     }
 

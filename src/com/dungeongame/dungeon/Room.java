@@ -23,19 +23,28 @@ public class Room {
     }
 
     public void createRoom(Layer walls) {
+	// Generate the walls of the room based on where it has openings
 	// Top and Bottom walls
 	for (int i = 0; i < ROOM_WIDTH / TILE_SIZE; i++) {
-	    if (openUp && i > 7 && i < 12) {
-		continue;
-	    } else {
+
+	    if (!openUp || i <= 7 || i >= 12) {
 		walls.addObject(new Tile(x + (i * TILE_SIZE), y, TILE_SIZE, TILE_SIZE, true, "wall"));
 	    }
 
-	    if (openDown && i > 7 && i < 12) {
-		continue;
-	    } else {
-		walls.addObject(
-			new Tile(x + (i * TILE_SIZE), y + ROOM_HEIGHT - TILE_SIZE, TILE_SIZE, TILE_SIZE, true, "wall"));
+	    if (!openDown || i <= 7 || i >= 12) {
+		walls.addObject(new Tile(x + (i * TILE_SIZE), y + (ROOM_HEIGHT / TILE_SIZE - 1) * TILE_SIZE, TILE_SIZE,
+			TILE_SIZE, true, "wall"));
+	    }
+	}
+
+	// Left and Right walls
+	for (int i = 1; i < ROOM_HEIGHT / TILE_SIZE; i++) {
+	    if (!openLeft || i <= 3 || i >= 7) {
+		walls.addObject(new Tile(x, y + (i * TILE_SIZE), TILE_SIZE, TILE_SIZE, true, "wall"));
+	    }
+	    if (!openRight || i <= 3 || i >= 7) {
+		walls.addObject(new Tile(x + (ROOM_WIDTH / TILE_SIZE - 1) * TILE_SIZE, y + (i * TILE_SIZE), TILE_SIZE,
+			TILE_SIZE, true, "wall"));
 	    }
 	}
     }
