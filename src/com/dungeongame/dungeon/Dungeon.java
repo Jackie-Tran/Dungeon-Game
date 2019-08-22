@@ -1,23 +1,40 @@
 package com.dungeongame.dungeon;
 
+import java.util.Random;
+
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
 import com.mikejack.objects.Layer;
 
+/*
+ * Dungeon is made up 16 rooms layed out in a 4x4 pattern. We choose one of the rooms in the first row to be our starting room
+ * then we randomly choose the next room to be to the right, below, or left. We repeat this process until the last row. If
+ * at the last row of levels we rnadomly choose to go down, make this room the exit. If we try to move left or right and we are
+ * in one of the edge rooms, make the next room below instead. All the rooms in this path will have openings to the left and right
+ * and one to the next room and previous room. Paths outside this critical path may or may not have openings. These will be randomly generated.
+ */
 public class Dungeon {
 
+    // Variables for which way the next ciritcal room will be
+    private final int MOVE_UP=0, MOVE_RIGHT=1, MOVE_DOWN=2, MOVE_LEFT=3;
+    
     private Layer walls;
-    private Room tempRoom;
+    private Room rooms[];
+    
+    private int startRoom, endRoom;
     
     public Dungeon() {
 	walls = new Layer();
-	tempRoom = new Room(0, 0, true, true, true, true);
+	rooms = new Room[16];
 	init();
     }
 
     public void init() {
-	// TODO Auto-generated method stub
-	tempRoom.createRoom(walls);
+	// Initialize the rooms
+	for (int i = 0; i < rooms.length; i++) {
+	    rooms[i] = new Room((i%4)*Room.WIDTH, (i/4)*Room.HEIGHT, false, false, false, false);
+	}
+	generateDungeon();
 	
     }
     
@@ -30,7 +47,105 @@ public class Dungeon {
 	// TODO Auto-generated method stub
 	walls.render(gc);
     }
+    
+    private void generateDungeon() {
+	generateCriticalPath();
+	
+	// Create the rooms
+	for (int i = 0; i < rooms.length; i++) {
+	    rooms[i].createRoom(walls);
+	}
+	
+    }
+    
+    private void generateCriticalPath() {
+	Random random = new Random();
+	// Choose a start room in the first row
+	startRoom = random.nextInt(4);
+	int currentRoom = startRoom;
+	int prevDir=0;
+	int nextDir=0;
+	System.out.println("Start Room: " + startRoom);
+	while (currentRoom < rooms.length) {
 
+	    System.out.println(currentRoom);
+	    rooms[currentRoom].setOpenLeft(true);
+	    rooms[currentRoom].setOpenRight(true);
+	    
+	    // Choosing the next room while avoiding going to the previous room
+	    do {
+		nextDir = random.nextInt(3)+1;
+	    } while (nextDir == prevDir);
+	    
+	    if (nextDir == MOVE_RIGHT) {
+		prevDir = MOVE_LEFT;
+	    } else if (nextDir == MOVE_LEFT) {
+		prevDir = MOVE_RIGHT;
+	    }
+	    
+	    if (nextDir == MOVE_RIGHT) {
+		// If we are in the right column of rooms move down instead
+		if ((currentRoom+1)%4 == 0) {
+		    if (currentRoom == rooms.length-1) {
+			// Case we are in the bottom right room
+			endRoom = currentRoom;
+			break;
+		    }
+		    rooms[currentRoom].setOpenDown(true);
+		    currentRoom += 4;
+		    rooms[currentRoom].setOpenUp(true);
+		    continue;
+		}
+		currentRoom++;
+	    } else if (nextDir == MOVE_DOWN) {
+		// If we are in the bottom row of rooms make the current room the end room
+		if (currentRoom >= 12) {
+		    endRoom = currentRoom;
+		    break;
+		}
+		rooms[currentRoom].setOpenDown(true);
+		currentRoom += 4;
+		rooms[currentRoom].setOpenUp(true);
+	    } else { // Moving left
+		// If we are in the left column of rooms move down instead
+		if (currentRoom%4 == 0) {
+		    if (currentRoom == rooms.length-4) {
+			// Case we are in the bottom left room
+			endRoom = currentRoom;
+			break;
+		    }
+		    rooms[currentRoom].setOpenDown(true);
+		    currentRoom += 4;
+		    rooms[currentRoom].setOpenUp(true);
+		    continue;
+		}
+		currentRoom--;
+	    }
+	}
+    }
+
+    private void generateOutsidePath() {
+	Random random = new Random();
+	
+	for (int i = 0; i < rooms.length; i++) {
+	    if (rooms[i].isBlocked()) {
+		for (int j = 0; j < 4; j++) {
+		    if (random.nextInt(4) == 0) {
+			if (j == 0) {
+			    rooms[i].setOpenUp(true);
+			} else if (j == 1) {
+			    rooms[i].setOpenRight(true);
+			} else if (j == 2) {
+			    rooms[i].setOpenDown(true);
+			} else {
+			    rooms[i].setOpenLeft(true);
+			}
+		    }
+		}
+	    }
+	}
+    }
+    
     public Layer getWalls() {
         return walls;
     }
