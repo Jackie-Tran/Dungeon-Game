@@ -4,26 +4,31 @@ import com.dungeongame.dungeon.Dungeon;
 import com.mikejack.engine.AbstractGame;
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
+import com.mikejack.gamestate.GameStateManager;
 
 public class DungeonGame extends AbstractGame{
 
     public static final int WIDTH=320, HEIGHT=180, SCALE=4;
     public static final String TITLE = "Dungeon Game";
     
-    private Dungeon dungeon;
+    public static final int DUNGEON_STATE = 1;
+    
+    private GameStateManager gsm;
+    
     
     public DungeonGame() {
-	dungeon = new Dungeon();
+	gsm = new GameStateManager();
+	gsm.setState(new Dungeon(gsm));
     }
 
     @Override
     public void update(GameContainer gc, float dt) {
-	dungeon.update(gc);
+	gsm.update(gc, dt);
     }
     
     @Override
     public void render(GameContainer gc, Screen screen) {
-	dungeon.render(gc, screen);
+	gsm.render(gc, screen);
     }
     
     public static void main(String args[]) {

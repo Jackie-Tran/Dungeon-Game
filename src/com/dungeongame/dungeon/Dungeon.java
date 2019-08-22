@@ -2,8 +2,12 @@ package com.dungeongame.dungeon;
 
 import java.util.Random;
 
+import com.dungeongame.game.Camera;
+import com.dungeongame.mobs.Player;
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
+import com.mikejack.gamestate.GameState;
+import com.mikejack.gamestate.GameStateManager;
 import com.mikejack.objects.Layer;
 
 /*
@@ -13,44 +17,54 @@ import com.mikejack.objects.Layer;
  * in one of the edge rooms, make the next room below instead. All the rooms in this path will have openings to the left and right
  * and one to the next room and previous room. Paths outside this critical path may or may not have openings. These will be randomly generated.
  */
-public class Dungeon {
+public class Dungeon extends GameState{
 
     // Variables for which way the next ciritcal room will be
     private final int MOVE_UP=0, MOVE_RIGHT=1, MOVE_DOWN=2, MOVE_LEFT=3;
     
+    private Camera camera;
+    
+    private Player player;
     private Layer walls;
     private Room rooms[];
     
     private int startRoom, endRoom;
     
-    public Dungeon() {
+    public Dungeon(GameStateManager gsm) {
+	super(gsm);
+	player = new Player(0, 0, 16, 16, "player");
+	camera = new Camera(player);
 	walls = new Layer();
 	rooms = new Room[16];
-	init();
     }
 
     public void init() {
 	// Initialize the rooms
 	for (int i = 0; i < rooms.length; i++) {
-	    rooms[i] = new Room((i%4)*Room.WIDTH, (i/4)*Room.HEIGHT, false, false, false, false);
+	    rooms[i] = new Room((i%4)*Room.WIDTH, (i/4)*Room.TILE_SIZE*(Room.HEIGHT/Room.TILE_SIZE), false, false, false, false);
 	}
 	generateDungeon();
+	player.setX(rooms[startRoom].getX() + Room.WIDTH/2 - player.getWidth()/2);
+	player.setY(rooms[startRoom].getY() + Room.HEIGHT/2 - player.getHeight()/2);
 	
     }
     
-    public void update(GameContainer gc) {
+    public void update(GameContainer gc, float dt) {
 	// TODO Auto-generated method stub
-	
+	player.update(gc, dt);
+	camera.update(gc, dt);
+
     }
 
     public void render(GameContainer gc, Screen screen) {
 	// TODO Auto-generated method stub
 	walls.render(gc);
+	player.render(gc);
     }
     
     private void generateDungeon() {
 	generateCriticalPath();
-	
+	generateOutsidePath();
 	// Create the rooms
 	for (int i = 0; i < rooms.length; i++) {
 	    rooms[i].createRoom(walls);
@@ -130,7 +144,7 @@ public class Dungeon {
 	for (int i = 0; i < rooms.length; i++) {
 	    if (rooms[i].isBlocked()) {
 		for (int j = 0; j < 4; j++) {
-		    if (random.nextInt(4) == 0) {
+		    if (random.nextInt(3) == 0) {
 			if (j == 0) {
 			    rooms[i].setOpenUp(true);
 			} else if (j == 1) {
@@ -152,6 +166,18 @@ public class Dungeon {
 
     public void setWalls(Layer walls) {
         this.walls = walls;
+    }
+
+    @Override
+    public void keyPressed(int arg0) {
+	// TODO Auto-generated method stub
+	
+    }
+
+    @Override
+    public void keyReleased(int arg0) {
+	// TODO Auto-generated method stub
+	
     }
 
 
