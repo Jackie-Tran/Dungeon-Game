@@ -32,8 +32,6 @@ public class Dungeon extends GameState{
     
     public Dungeon(GameStateManager gsm) {
 	super(gsm);
-	player = new Player(0, 0, 16, 16, "player");
-	camera = new Camera(player);
 	walls = new Layer();
 	rooms = new Room[16];
     }
@@ -44,8 +42,13 @@ public class Dungeon extends GameState{
 	    rooms[i] = new Room((i%4)*Room.WIDTH, (i/4)*Room.TILE_SIZE*(Room.HEIGHT/Room.TILE_SIZE), false, false, false, false);
 	}
 	generateDungeon();
+	
+	// Load player and camera
+	player = new Player(0, 0, 16, 16, "player");
 	player.setX(rooms[startRoom].getX() + Room.WIDTH/2 - player.getWidth()/2);
 	player.setY(rooms[startRoom].getY() + Room.HEIGHT/2 - player.getHeight()/2);
+	
+	camera = new Camera(player);
 	
     }
     
@@ -60,6 +63,7 @@ public class Dungeon extends GameState{
 	// TODO Auto-generated method stub
 	walls.render(gc);
 	player.render(gc);
+	camera.render(screen);
     }
     
     private void generateDungeon() {
