@@ -105,7 +105,7 @@ public class GameContainer extends Canvas implements Runnable {
     }
 
     public void update() {
-	game.update(this, (float)1/UPDATE_CAP);
+	game.update(this);
 	input.update();
 
     }
@@ -126,7 +126,7 @@ public class GameContainer extends Canvas implements Runnable {
 	game.render(this, screen);
 	screen.process();
 	if (showFps)
-	    screen.drawText("FPS: " + Integer.toString(FPS), screen.getCamX(), screen.getCamY(), 0xffffffff);
+	    screen.drawText("FPS: " + Integer.toString(FPS), (int) screen.getCamX(), (int) screen.getCamY(), 0xffffffff);
 	g.drawImage(image, 0, 0, width * scale, height * scale, null);
 	g.dispose();
 	bs.show();

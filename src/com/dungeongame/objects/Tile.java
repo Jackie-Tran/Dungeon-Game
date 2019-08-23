@@ -14,7 +14,7 @@ public class Tile extends GameObject {
     }
 
     @Override
-    public void update(GameContainer gc, float dt) {
+    public void update(GameContainer gc) {
 	// TODO Auto-generated method stub
 	
     }

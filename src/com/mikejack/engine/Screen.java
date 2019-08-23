@@ -32,10 +32,10 @@ public class Screen {
     private int zDepth = 0;
     private boolean processing = false;
     
-    private int camX=0, camY=0;
+    private float camX=0, camY=0;
 
     private Font font = Font.STANDARD;
-
+    
     public Screen(GameContainer gc) {
 	this.gc = gc;
 	pW = gc.getImageWidth();
@@ -89,11 +89,12 @@ public class Screen {
     }
 
     public void setPixel(int x, int y, int colour) {
-	int alpha = (colour >> 24) & 0xff;
-	
-	// Apply camera offset
+	// Camera offset
 	x -= camX;
 	y -= camY;
+	
+	int alpha = (colour >> 24) & 0xff;
+	
 	
 	if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) {
 	    return;
@@ -120,7 +121,7 @@ public class Screen {
     }
 
     public void setLightMap(int x, int y, int colour) {
-	
+	// Camera offset
 	x -= camX;
 	y -= camY;
 	
@@ -137,7 +138,8 @@ public class Screen {
     }
 
     public void setLightBlock(int x, int y, int value) {
-	
+
+	// Camera offset
 	x -= camX;
 	y -= camY;
 	
@@ -215,6 +217,13 @@ public class Screen {
     }
     
     public void drawRect(int offX, int offY, int width, int height, int colour) {
+	
+	// Rendering optimization: don't render if outside of camera
+	if (offX + width - camX < 0) return;
+	if (offY + height - camY < 0) return;
+	if (offX - camX > pW) return;
+	if (offY - camY > pH) return;
+	
 	for (int y = 0; y < height; y++) {
 	    setPixel(offX, y + offY, colour);
 	    setPixel(offX + width, y + offY, colour);
@@ -227,6 +236,13 @@ public class Screen {
     }
 
     public void fillRect(int offX, int offY, int width, int height, int colour) {
+	
+	// Rendering optimization: don't render if outside of camera
+	if (offX + width - camX < 0) return;
+	if (offY + height - camY < 0) return;
+	if (offX - camX > pW) return;
+	if (offY - camY > pH) return;
+	
 	for (int y = 0; y < height; y++) {
 	    for (int x = 0; x < width; x++) {
 		setPixel(x + offX, y + offY, colour);
@@ -318,7 +334,7 @@ public class Screen {
 	ambientColour = newLightColour;
     }
 
-    public int getCamX() {
+    public float getCamX() {
         return camX;
     }
 
@@ -326,7 +342,7 @@ public class Screen {
         this.camX = camX;
     }
 
-    public int getCamY() {
+    public float getCamY() {
         return camY;
     }
 

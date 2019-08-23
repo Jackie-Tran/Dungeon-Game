@@ -8,41 +8,43 @@ import com.mikejack.objects.GameObject;
 
 public class Camera {
 
-    private float x,y;
+    private float x, y;
+    private float targetX, targetY;
     private GameObject target;
-    
+
     public Camera(GameObject target) {
 	this.target = target;
-	x = (target.getX() + target.getWidth()/2) - DungeonGame.WIDTH / 2;
-	y = (target.getY() + target.getHeight()/2) - DungeonGame.HEIGHT / 2;
+	x = (target.getX() + target.getWidth() / 2) - DungeonGame.WIDTH / 2;
+	y = (target.getY() + target.getHeight() / 2) - DungeonGame.HEIGHT / 2;
     }
-    
-    public void update(GameContainer gc, float dt) {
-	if (target == null)
-	    return;
-	
-	float targetX = (target.getX() + target.getWidth()/2) - DungeonGame.WIDTH / 2;
-	float targetY = (target.getY() + target.getHeight()/2) - DungeonGame.HEIGHT / 2;
-	
-	x += dt * (targetX - x) * 10;
-	y += dt * (targetY - y) * 10;
-	
+
+    public void update(GameContainer gc) {
+
+	targetX = (target.getX() + target.getWidth() / 2) - DungeonGame.WIDTH / 2;
+	targetY = (target.getY() + target.getHeight() / 2) - DungeonGame.HEIGHT / 2;
+	x = targetX;
+	y = targetY;
+
+	System.out.println("CamX: " + x + "\tCamY: " + y);
 	// Bounding the camera to the map size
 	if (x < 0) {
 	    x = 0;
-	} else if (x > 3*Room.WIDTH) {
-	    x = 3*Room.WIDTH;
+	} else if (x > 3 * Room.WIDTH) {
+	    x = 3 * Room.WIDTH;
 	}
-	
+
 	if (y < 0) {
 	    y = 0;
-	} else if (y > 3*Room.HEIGHT) {
-	    y = 3*Room.HEIGHT;
+	} else if (y > 3 * Room.HEIGHT) {
+	    y = 3 * Room.HEIGHT;
 	}
+	
+	gc.getScreen().setCamX((int) x);
+	gc.getScreen().setCamY((int) y);
+	
     }
-    
+
     public void render(Screen screen) {
-	screen.setCamX((int) x);
-	screen.setCamY((int) y); 
+	screen.drawRect((int) x + 10, (int) y + 10, DungeonGame.WIDTH-50, DungeonGame.HEIGHT-50, 0xffff00ff);
     }
 }

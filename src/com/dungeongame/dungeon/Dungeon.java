@@ -52,11 +52,12 @@ public class Dungeon extends GameState{
 	
     }
     
-    public void update(GameContainer gc, float dt) {
+    public void update(GameContainer gc) {
 	// TODO Auto-generated method stub
-	player.update(gc, dt);
-	camera.update(gc, dt);
 
+	player.update(gc);
+	
+	camera.update(gc);
     }
 
     public void render(GameContainer gc, Screen screen) {

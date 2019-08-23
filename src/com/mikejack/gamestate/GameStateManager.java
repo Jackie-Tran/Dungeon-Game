@@ -25,8 +25,8 @@ public class GameStateManager {
 
     }
 
-    public void update(GameContainer gc, float dt) {
-	currentState.update(gc, dt);
+    public void update(GameContainer gc) {
+	currentState.update(gc);
     }
 
     public void render(GameContainer gc, Screen screen) {

@@ -22,8 +22,8 @@ public class DungeonGame extends AbstractGame{
     }
 
     @Override
-    public void update(GameContainer gc, float dt) {
-	gsm.update(gc, dt);
+    public void update(GameContainer gc) {
+	gsm.update(gc);
     }
     
     @Override

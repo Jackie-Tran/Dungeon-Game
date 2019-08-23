@@ -28,7 +28,7 @@ public abstract class GameObject {
 	this.sprite = sprite;
     }
     
-    public abstract void update(GameContainer gc, float dt);
+    public abstract void update(GameContainer gc);
     public abstract void render(GameContainer gc);
 
     public Sprite getSprite() {

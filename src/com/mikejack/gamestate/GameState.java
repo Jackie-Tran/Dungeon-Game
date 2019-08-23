@@ -12,7 +12,7 @@ public abstract class GameState {
 	}
 	
 	public abstract void init();	
-	public abstract void update(GameContainer gc, float dt);
+	public abstract void update(GameContainer gc);
 	public abstract void render(GameContainer gc, Screen screen);
 	public abstract void keyPressed(int k);
 	public abstract void keyReleased(int k);

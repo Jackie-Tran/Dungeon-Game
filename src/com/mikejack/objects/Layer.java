@@ -12,9 +12,9 @@ public class Layer {
 	gameObjects = new ArrayList<GameObject>();
     }
     
-    public void update(GameContainer gc, float dt) {
+    public void update(GameContainer gc) {
 	for (GameObject object : gameObjects) {
-	    object.update(gc, dt);
+	    object.update(gc);
 	}
     }
     

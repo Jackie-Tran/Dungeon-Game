@@ -7,7 +7,7 @@ import com.sun.glass.events.KeyEvent;
 
 public class Player extends GameObject{
 
-    private float moveSpeed = 2;
+    private float moveSpeed = 1.5f;
     private int strength=5, dexterity=5, intelligence=5, luck=5; 
     
     public Player(float x, float y, int width, int height, String tag) {
@@ -17,13 +17,13 @@ public class Player extends GameObject{
     }
     
     @Override
-    public void update(GameContainer gc, float dt) {
+    public void update(GameContainer gc) {
 	// TODO Auto-generated method stub
 	x += velX;
 	y += velY;
 	keyInput(gc);
 	
-	//System.out.println("player x: " + x + "\tplayer y: " + y);
+	System.out.println("player x: " + x + "\tplayer y: " + y);
 	
     }
     
@@ -31,7 +31,7 @@ public class Player extends GameObject{
     public void render(GameContainer gc) {
 	gc.getScreen().fillRect((int) x, (int) y, width, height, 0xff00ff00);
 	
-	gc.getScreen().drawSprite(sprite, (int)x, (int)y);
+	//gc.getScreen().drawSprite(sprite, (int)x, (int)y);
     }
     
     private void keyInput(GameContainer gc) {
