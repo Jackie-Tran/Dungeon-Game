@@ -1,5 +1,7 @@
 package com.dungeongame.dungeon;
 
+import java.util.Random;
+
 import com.dungeongame.game.DungeonGame;
 import com.dungeongame.objects.Tile;
 import com.mikejack.objects.Layer;
@@ -24,81 +26,83 @@ public class Room {
 
     public void createRoom(Layer walls) {
 	// Generate the walls of the room based on where it has openings
+	Random random = new Random();
 	// Top and Bottom walls
 	for (int i = 0; i < WIDTH / TILE_SIZE; i++) {
 
 	    if (!openUp || i <= 7 || i >= 12) {
-		walls.addObject(new Tile(x + (i * TILE_SIZE), y, TILE_SIZE, TILE_SIZE, true, "wall"));
+		Tile tile = new Tile(x + (i * TILE_SIZE), y, TILE_SIZE, TILE_SIZE, "wall");
+		walls.addObject(tile);
 	    }
 
 	    if (!openDown || i <= 7 || i >= 12) {
 		walls.addObject(new Tile(x + (i * TILE_SIZE), y + (HEIGHT / TILE_SIZE - 1) * TILE_SIZE, TILE_SIZE,
-			TILE_SIZE, true, "wall"));
+			TILE_SIZE, "wall"));
 	    }
 	}
 
 	// Left and Right walls
 	for (int i = 1; i < HEIGHT / TILE_SIZE; i++) {
 	    if (!openLeft || i <= 3 || i >= 7) {
-		walls.addObject(new Tile(x, y + (i * TILE_SIZE), TILE_SIZE, TILE_SIZE, true, "wall"));
+		walls.addObject(new Tile(x, y + (i * TILE_SIZE), TILE_SIZE, TILE_SIZE, "wall"));
 	    }
 	    if (!openRight || i <= 3 || i >= 7) {
 		walls.addObject(new Tile(x + (WIDTH / TILE_SIZE - 1) * TILE_SIZE, y + (i * TILE_SIZE), TILE_SIZE,
-			TILE_SIZE, true, "wall"));
+			TILE_SIZE, "wall"));
 	    }
 	}
     }
 
     public boolean isOpenUp() {
-        return openUp;
+	return openUp;
     }
 
     public void setOpenUp(boolean openUp) {
-        this.openUp = openUp;
+	this.openUp = openUp;
     }
 
     public boolean isOpenRight() {
-        return openRight;
+	return openRight;
     }
 
     public void setOpenRight(boolean openRight) {
-        this.openRight = openRight;
+	this.openRight = openRight;
     }
 
     public boolean isOpenDown() {
-        return openDown;
+	return openDown;
     }
 
     public void setOpenDown(boolean openDown) {
-        this.openDown = openDown;
+	this.openDown = openDown;
     }
 
     public boolean isOpenLeft() {
-        return openLeft;
+	return openLeft;
     }
 
     public void setOpenLeft(boolean openLeft) {
-        this.openLeft = openLeft;
+	this.openLeft = openLeft;
     }
-    
+
     public boolean isBlocked() {
 	return !openUp && !openRight && !openDown && !openLeft;
     }
 
     public int getX() {
-        return x;
+	return x;
     }
 
     public void setX(int x) {
-        this.x = x;
+	this.x = x;
     }
 
     public int getY() {
-        return y;
+	return y;
     }
 
     public void setY(int y) {
-        this.y = y;
+	this.y = y;
     }
 
 }
