@@ -8,6 +8,7 @@ import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
 import com.mikejack.gamestate.GameState;
 import com.mikejack.gamestate.GameStateManager;
+import com.mikejack.graphics.Sprite;
 import com.mikejack.objects.Layer;
 
 /*
@@ -17,21 +18,23 @@ import com.mikejack.objects.Layer;
  * in one of the edge rooms, make the next room below instead. All the rooms in this path will have openings to the left and right
  * and one to the next room and previous room. Paths outside this critical path may or may not have openings. These will be randomly generated.
  */
-public class Dungeon extends GameState{
+public class Dungeon extends GameState {
 
     // Variables for which way the next ciritcal room will be
-    private final int MOVE_UP=0, MOVE_RIGHT=1, MOVE_DOWN=2, MOVE_LEFT=3;
-    
+    private final int MOVE_UP = 0, MOVE_RIGHT = 1, MOVE_DOWN = 2, MOVE_LEFT = 3;
+
+    public static DungeonContent content;
+
     private Camera camera;
-    
     private Player player;
     private Layer walls;
     private Room rooms[];
-    
+
     private int startRoom, endRoom;
-    
+
     public Dungeon(GameStateManager gsm) {
 	super(gsm);
+	content = new DungeonContent();
 	walls = new Layer();
 	rooms = new Room[16];
     }
@@ -39,24 +42,25 @@ public class Dungeon extends GameState{
     public void init() {
 	// Initialize the rooms
 	for (int i = 0; i < rooms.length; i++) {
-	    rooms[i] = new Room((i%4)*Room.WIDTH, (i/4)*Room.TILE_SIZE*(Room.HEIGHT/Room.TILE_SIZE), false, false, false, false);
+	    rooms[i] = new Room((i % 4) * Room.WIDTH, (i / 4) * Room.TILE_SIZE * (Room.HEIGHT / Room.TILE_SIZE), false,
+		    false, false, false);
 	}
 	generateDungeon();
-	
+
 	// Load player and camera
-	player = new Player(0, 0, 16, 16, "player");
-	player.setX(rooms[startRoom].getX() + Room.WIDTH/2 - player.getWidth()/2);
-	player.setY(rooms[startRoom].getY() + Room.HEIGHT/2 - player.getHeight()/2);
-	
+	player = new Player(0, 0, 16, 16, "player", walls);
+	player.setX(rooms[startRoom].getX() + Room.WIDTH / 2 - player.getWidth() / 2);
+	player.setY(rooms[startRoom].getY() + Room.HEIGHT / 2 - player.getHeight() / 2);
+
 	camera = new Camera(player);
-	
+
     }
-    
+
     public void update(GameContainer gc) {
 	// TODO Auto-generated method stub
 
 	player.update(gc);
-	
+
 	camera.update(gc);
     }
 
@@ -64,9 +68,8 @@ public class Dungeon extends GameState{
 	// TODO Auto-generated method stub
 	walls.render(gc);
 	player.render(gc);
-	camera.render(screen);
     }
-    
+
     private void generateDungeon() {
 	generateCriticalPath();
 	generateOutsidePath();
@@ -74,38 +77,38 @@ public class Dungeon extends GameState{
 	for (int i = 0; i < rooms.length; i++) {
 	    rooms[i].createRoom(walls);
 	}
-	
+
     }
-    
+
     private void generateCriticalPath() {
 	Random random = new Random();
 	// Choose a start room in the first row
 	startRoom = random.nextInt(4);
 	int currentRoom = startRoom;
-	int prevDir=0;
-	int nextDir=0;
+	int prevDir = 0;
+	int nextDir = 0;
 	System.out.println("Start Room: " + startRoom);
 	while (currentRoom < rooms.length) {
 
 	    System.out.println(currentRoom);
 	    rooms[currentRoom].setOpenLeft(true);
 	    rooms[currentRoom].setOpenRight(true);
-	    
+
 	    // Choosing the next room while avoiding going to the previous room
 	    do {
-		nextDir = random.nextInt(3)+1;
+		nextDir = random.nextInt(3) + 1;
 	    } while (nextDir == prevDir);
-	    
+
 	    if (nextDir == MOVE_RIGHT) {
 		prevDir = MOVE_LEFT;
 	    } else if (nextDir == MOVE_LEFT) {
 		prevDir = MOVE_RIGHT;
 	    }
-	    
+
 	    if (nextDir == MOVE_RIGHT) {
 		// If we are in the right column of rooms move down instead
-		if ((currentRoom+1)%4 == 0) {
-		    if (currentRoom == rooms.length-1) {
+		if ((currentRoom + 1) % 4 == 0) {
+		    if (currentRoom == rooms.length - 1) {
 			// Case we are in the bottom right room
 			endRoom = currentRoom;
 			break;
@@ -127,8 +130,8 @@ public class Dungeon extends GameState{
 		rooms[currentRoom].setOpenUp(true);
 	    } else { // Moving left
 		// If we are in the left column of rooms move down instead
-		if (currentRoom%4 == 0) {
-		    if (currentRoom == rooms.length-4) {
+		if (currentRoom % 4 == 0) {
+		    if (currentRoom == rooms.length - 4) {
 			// Case we are in the bottom left room
 			endRoom = currentRoom;
 			break;
@@ -145,7 +148,7 @@ public class Dungeon extends GameState{
 
     private void generateOutsidePath() {
 	Random random = new Random();
-	
+
 	for (int i = 0; i < rooms.length; i++) {
 	    if (rooms[i].isBlocked()) {
 		for (int j = 0; j < 4; j++) {
@@ -164,28 +167,25 @@ public class Dungeon extends GameState{
 	    }
 	}
     }
-    
+
     public Layer getWalls() {
-        return walls;
+	return walls;
     }
 
     public void setWalls(Layer walls) {
-        this.walls = walls;
+	this.walls = walls;
     }
 
     @Override
     public void keyPressed(int arg0) {
 	// TODO Auto-generated method stub
-	
+
     }
 
     @Override
     public void keyReleased(int arg0) {
 	// TODO Auto-generated method stub
-	
+
     }
 
-
-    
-    
 }

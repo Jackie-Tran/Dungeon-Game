@@ -177,39 +177,44 @@ public class Screen {
     }
 
     public void drawSprite(Sprite sprite, int offX, int offY) {
-
 	if (sprite.isAlpha() && !processing) {
 	    imageRequest.add(new ImageRequest(sprite, zDepth, offX, offY));
 	    return;
 	}
 
-	int newX = 0;
-	int newY = 0;
+	int newX = (int) camX;
+	int newY = (int) camY;
 	int newWidth = sprite.getWidth();
 	int newHeight = sprite.getHeight();
-
 	// Off Screen
-	if (offX < -newWidth)
+	if (offX < camX-newWidth)
 	    return;
-	if (offY < -newHeight)
+	if (offY < camY-newHeight)
 	    return;
-	if (offX >= pW)
+	if (offX >= camX+pW)
 	    return;
-	if (offY >= pH)
+	if (offY >= camY+pH)
 	    return;
 
 	// Clipping Sprites
-	if (offX < 0)
+	if (offX < camX)
 	    newX -= offX;
-	if (offY < 0)
+	if (offY < camY)
 	    newY -= offY;
-	if (offX + newWidth >= pW)
-	    newWidth -= newWidth + offX - pW;
-	if (offY + newHeight >= pH)
-	    newHeight -= newHeight + offY - pH;
-
-	for (int y = newY; y < newHeight; y++) {
-	    for (int x = newX; x < newWidth; x++) {
+	if (offX + newWidth >= camX+pW)
+	    newWidth = (int) camX + pW - offX;
+	if (offY + newHeight >= camY+pH)
+	    newHeight = (int) camY + pH - offY;
+//
+//	for (int y = newY; y < newHeight; y++) {
+//	    for (int x = newX; x < newWidth; x++) {
+//		setPixel(x + offX, y + offY, sprite.getPixels()[x + y * sprite.getWidth()]);
+//		setLightBlock(x + offX, y + offY, sprite.getLightBlock());
+//	    }
+//	}
+	
+	for (int y = 0; y < newHeight; y++) {
+	    for (int x = 0; x < newWidth; x++) {
 		setPixel(x + offX, y + offY, sprite.getPixels()[x + y * sprite.getWidth()]);
 		setLightBlock(x + offX, y + offY, sprite.getLightBlock());
 	    }
@@ -226,7 +231,7 @@ public class Screen {
 	
 	for (int y = 0; y < height; y++) {
 	    setPixel(offX, y + offY, colour);
-	    setPixel(offX + width, y + offY, colour);
+	    setPixel(offX + width-1, y + offY, colour);
 	}
 
 	for (int x = 0; x < width; x++) {

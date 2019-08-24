@@ -26,6 +26,12 @@ public class Sprite {
 	height = image.getHeight();
 	pixels = image.getRGB(0, 0, width, height, null, 0, width);
     }
+    
+    public Sprite(int pixels[], int width, int height) {
+	this.width = width;
+	this.height = height;
+	this.pixels = pixels;
+    }
 
     public int getWidth() {
         return width;

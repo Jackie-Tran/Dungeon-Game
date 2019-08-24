@@ -25,7 +25,7 @@ public class Camera {
 	x = targetX;
 	y = targetY;
 
-	System.out.println("CamX: " + x + "\tCamY: " + y);
+	//System.out.println("CamX: " + x + "\tCamY: " + y);
 	// Bounding the camera to the map size
 	if (x < 0) {
 	    x = 0;
@@ -42,9 +42,5 @@ public class Camera {
 	gc.getScreen().setCamX((int) x);
 	gc.getScreen().setCamY((int) y);
 	
-    }
-
-    public void render(Screen screen) {
-	screen.drawRect((int) x + 10, (int) y + 10, DungeonGame.WIDTH-50, DungeonGame.HEIGHT-50, 0xffff00ff);
     }
 }
