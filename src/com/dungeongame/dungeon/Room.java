@@ -12,6 +12,7 @@ public class Room {
     public static final int HEIGHT = DungeonGame.HEIGHT;
     public static final int TILE_SIZE = 16;
 
+    private RoomLoader roomLoader;
     private int x, y;
     private boolean openUp, openRight, openDown, openLeft;
 
@@ -22,35 +23,49 @@ public class Room {
 	this.openRight = openRight;
 	this.openDown = openDown;
 	this.openLeft = openLeft;
+	roomLoader = new RoomLoader();
     }
 
     public void createRoom(Layer walls) {
 	// Generate the walls of the room based on where it has openings
 	Random random = new Random();
-	// Top and Bottom walls
-	for (int i = 0; i < WIDTH / TILE_SIZE; i++) {
-
-	    if (!openUp || i <= 7 || i >= 12) {
-		Tile tile = new Tile(x + (i * TILE_SIZE), y, TILE_SIZE, TILE_SIZE, "wall");
-		walls.addObject(tile);
-	    }
-
-	    if (!openDown || i <= 7 || i >= 12) {
-		walls.addObject(new Tile(x + (i * TILE_SIZE), y + (HEIGHT / TILE_SIZE - 1) * TILE_SIZE, TILE_SIZE,
-			TILE_SIZE, "wall"));
-	    }
+	int roomNumber = random.nextInt(1)+1;
+	// Single openings
+	if (openUp && openRight && openDown && openLeft) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightDownLeft/"+roomNumber+".txt");
+	} else if (openUp && openRight && openDown) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightDown/"+roomNumber+".txt");
+	} else if (openUp && openRight && openLeft) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightLeft/"+roomNumber+".txt");
+	} else if (openUp && openDown && openLeft) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpDownLeft/"+roomNumber+".txt");
+	} else if (openRight && openDown && openLeft) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightDownLeft/"+roomNumber+".txt");
+	} else if (openUp && openRight) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRight/"+roomNumber+".txt");
+	} else if (openUp && openDown) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpDown/"+roomNumber+".txt");
+	} else if (openRight && openDown) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightDown/"+roomNumber+".txt");
+	} else if (openUp && openLeft) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpLeft/"+roomNumber+".txt");
+	} else if (openRight && openLeft) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightLeft/"+roomNumber+".txt");
+	} else if (openDown && openLeft) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openDownLeft/"+roomNumber+".txt");
+	} else if (openUp) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUp/"+roomNumber+".txt");
+	} else if (openRight) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openRight/"+roomNumber+".txt");
+	} else if (openDown) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openDown/"+roomNumber+".txt");
+	} else if (openLeft) {
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openLeft/"+roomNumber+".txt");
+	} else {
+	    return;
 	}
-
-	// Left and Right walls
-	for (int i = 1; i < HEIGHT / TILE_SIZE; i++) {
-	    if (!openLeft || i <= 3 || i >= 7) {
-		walls.addObject(new Tile(x, y + (i * TILE_SIZE), TILE_SIZE, TILE_SIZE, "wall"));
-	    }
-	    if (!openRight || i <= 3 || i >= 7) {
-		walls.addObject(new Tile(x + (WIDTH / TILE_SIZE - 1) * TILE_SIZE, y + (i * TILE_SIZE), TILE_SIZE,
-			TILE_SIZE, "wall"));
-	    }
-	}
+	roomLoader.readRoomFile(x, y, walls);
+	
     }
 
     public boolean isOpenUp() {

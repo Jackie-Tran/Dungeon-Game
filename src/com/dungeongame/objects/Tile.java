@@ -1,21 +1,17 @@
 package com.dungeongame.objects;
 
-import com.dungeongame.dungeon.Dungeon;
 import com.mikejack.engine.GameContainer;
+import com.mikejack.graphics.Sprite;
 import com.mikejack.objects.GameObject;
 
 public class Tile extends GameObject {
 
-    private boolean isSolid = false;
-    
     public Tile(float x, float y, int width, int height, String tag) {
 	super(x, y, width, height, tag);
-
     }
-    
-    public Tile(float x, float y, int width, int height, boolean isSolid, String tag) {
-	super(x, y, width, height, tag);
-	this.isSolid = isSolid;
+
+    public Tile (float x, float y, int width, int height, String tag, Sprite sprite) {
+	super(x,y,width,height,tag,sprite);
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.dungeongame.game.Camera;
 import com.dungeongame.mobs.Player;
+import com.dungeongame.objects.Tile;
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
 import com.mikejack.gamestate.GameState;
@@ -30,7 +31,9 @@ public class Dungeon extends GameState {
     private Layer walls;
     private Room rooms[];
 
-    private int startRoom, endRoom;
+    private Room tempRoom;
+
+    private int startRoom = 0, endRoom = 0;
 
     public Dungeon(GameStateManager gsm) {
 	super(gsm);
@@ -46,7 +49,10 @@ public class Dungeon extends GameState {
 		    false, false, false);
 	}
 	generateDungeon();
-
+//	for (int i = 0; i < Room.WIDTH/Room.TILE_SIZE+2; i++) {
+//	    walls.addObject(new Tile(i * Room.TILE_SIZE, 0, Room.TILE_SIZE, Room.TILE_SIZE, "wall", content.TOP_WALL1));
+//	    walls.addObject(new Tile(i * Room.TILE_SIZE, 4*Room.HEIGHT+1, Room.TILE_SIZE,Room.TILE_SIZE,"wall", content.BOTTOM_WALL1));
+//	}
 	// Load player and camera
 	player = new Player(0, 0, 16, 16, "player", walls);
 	player.setX(rooms[startRoom].getX() + Room.WIDTH / 2 - player.getWidth() / 2);
@@ -66,13 +72,20 @@ public class Dungeon extends GameState {
 
     public void render(GameContainer gc, Screen screen) {
 	// TODO Auto-generated method stub
+	// screen.fillRect(0, 0, Room.WIDTH*4, Room.HEIGHT*4, 0xff25131a);
 	walls.render(gc);
 	player.render(gc);
     }
 
     private void generateDungeon() {
+	// Generate outside walls
+
 	generateCriticalPath();
 	generateOutsidePath();
+
+	fixDungeonBorder();
+	fixDeadOpenings();
+
 	// Create the rooms
 	for (int i = 0; i < rooms.length; i++) {
 	    rooms[i].createRoom(walls);
@@ -152,7 +165,7 @@ public class Dungeon extends GameState {
 	for (int i = 0; i < rooms.length; i++) {
 	    if (rooms[i].isBlocked()) {
 		for (int j = 0; j < 4; j++) {
-		    if (random.nextInt(3) == 0) {
+		    if (random.nextInt(2) == 0) {
 			if (j == 0) {
 			    rooms[i].setOpenUp(true);
 			} else if (j == 1) {
@@ -164,6 +177,50 @@ public class Dungeon extends GameState {
 			}
 		    }
 		}
+	    }
+	}
+    }
+
+    private void fixDungeonBorder() {
+	// Check border rooms to see if there's an opening going no where
+	// Top rooms
+	for (int i = 0; i < 4; i++) {
+	    if (rooms[i].isOpenUp())
+		rooms[i].setOpenUp(false);
+	}
+	// Bottom rooms
+	for (int i = 12; i < rooms.length; i++) {
+	    if (rooms[i].isOpenDown())
+		rooms[i].setOpenDown(false);
+	}
+	// Left rooms
+	for (int i = 0; i < rooms.length; i += 4) {
+	    if (rooms[i].isOpenLeft())
+		rooms[i].setOpenLeft(false);
+	}
+	// Right rooms
+	for (int i = 3; i < rooms.length; i += 4) {
+	    if (rooms[i].isOpenRight())
+		rooms[i].setOpenRight(false);
+	}
+    }
+
+    private void fixDeadOpenings() {
+	// Fix openings leading no where
+	for (int i = 0; i < rooms.length; i++) {
+	    int up = i - 4, right = i + 1, down = i + 4, left = i - 1;
+	    // Make sure the indexes are in the bounds
+	    if (rooms[i].isOpenUp() && (up >= 0 && up < rooms.length) && !rooms[up].isOpenDown()) {
+		rooms[i].setOpenUp(false);
+	    }
+	    if (rooms[i].isOpenRight() && (right >= 0 && right < rooms.length) && !rooms[right].isOpenLeft()) {
+		rooms[i].setOpenRight(false);
+	    }
+	    if (rooms[i].isOpenDown() && (down >= 0 && down < rooms.length) && !rooms[down].isOpenUp()) {
+		rooms[i].setOpenDown(false);
+	    }
+	    if (rooms[i].isOpenLeft() && (left >= 0 && left < rooms.length) && !rooms[left].isOpenRight()) {
+		rooms[i].setOpenLeft(false);
 	    }
 	}
     }
