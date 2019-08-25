@@ -22,9 +22,8 @@ public class Tile extends GameObject {
 
     @Override
     public void render(GameContainer gc) {
-//	gc.getScreen().fillRect((int) x, (int) y, width, height, 0xff3b3936);
-	gc.getScreen().drawRect((int) x, (int) y, width, height, 0xffff0000);
 	gc.getScreen().drawSprite(sprite, (int) x, (int) y);
+	gc.getScreen().drawRect((int) x, (int) y, width, height, 0x55000000);
 
     }
 
