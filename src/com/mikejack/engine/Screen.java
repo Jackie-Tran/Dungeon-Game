@@ -31,11 +31,11 @@ public class Screen {
     private static int ambientColour = DEFAULT_AMBIENT_COLOUR;
     private int zDepth = 0;
     private boolean processing = false;
-    
-    private float camX=0, camY=0;
+
+    private float camX = 0, camY = 0;
 
     private Font font = Font.STANDARD;
-    
+
     public Screen(GameContainer gc) {
 	this.gc = gc;
 	pW = gc.getImageWidth();
@@ -65,7 +65,7 @@ public class Screen {
 	for (int i = 0; i < imageRequest.size(); i++) {
 	    ImageRequest ir = imageRequest.get(i);
 	    setzDepth(ir.zDepth);
-	    drawSprite(ir.sprite, ir.offX, ir.offY);
+	    drawSprite(ir.sprite, ir.offX, ir.offY, false, false);
 	}
 
 	// Draw lighting
@@ -92,10 +92,9 @@ public class Screen {
 	// Camera offset
 	x -= camX;
 	y -= camY;
-	
+
 	int alpha = (colour >> 24) & 0xff;
-	
-	
+
 	if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) {
 	    return;
 	}
@@ -124,7 +123,7 @@ public class Screen {
 	// Camera offset
 	x -= camX;
 	y -= camY;
-	
+
 	if (x < 0 || x >= pW || y < 0 || y >= pH) {
 	    return;
 	}
@@ -142,7 +141,7 @@ public class Screen {
 	// Camera offset
 	x -= camX;
 	y -= camY;
-	
+
 	if (x < 0 || x >= pW || y < 0 || y >= pH) {
 	    return;
 	}
@@ -176,24 +175,43 @@ public class Screen {
 
     }
 
-    public void drawSprite(Sprite sprite, int offX, int offY) {
+    public void drawSprite(Sprite sprite, int offX, int offY, boolean flipVertical, boolean flipHorizontal) {
 	if (sprite.isAlpha() && !processing) {
 	    imageRequest.add(new ImageRequest(sprite, zDepth, offX, offY));
 	    return;
 	}
 
+	int spriteWidth = sprite.getWidth();
+	int spriteHeight = sprite.getHeight();
+	int spritePixels[] = new int[spriteWidth*spriteHeight];
+
+	if (!flipVertical && !flipHorizontal) {
+	    spritePixels = sprite.getPixels();
+	} else if (flipVertical) {
+	    for (int y = 0; y < spriteHeight; y++) {
+		for (int x = 0; x < spriteWidth; x++) {
+		    spritePixels[x + y * spriteWidth] = sprite.getPixels()[x + (spriteHeight - 1 - y) * spriteWidth];
+		}
+	    }
+	} else if (flipHorizontal) {
+	    for (int y = 0; y < spriteHeight; y++) {
+		for (int x = 0; x < spriteWidth; x++) {
+		    spritePixels[x + y * spriteWidth] = sprite.getPixels()[(spriteWidth-1-x) + y * spriteWidth];
+		}
+	    }
+	}
 	int newX = (int) camX;
 	int newY = (int) camY;
 	int newWidth = sprite.getWidth();
 	int newHeight = sprite.getHeight();
 	// Off Screen
-	if (offX < camX-newWidth)
+	if (offX < camX - newWidth)
 	    return;
-	if (offY < camY-newHeight)
+	if (offY < camY - newHeight)
 	    return;
-	if (offX >= camX+pW)
+	if (offX >= camX + pW)
 	    return;
-	if (offY >= camY+pH)
+	if (offY >= camY + pH)
 	    return;
 
 	// Clipping Sprites
@@ -201,9 +219,9 @@ public class Screen {
 	    newX -= offX;
 	if (offY < camY)
 	    newY -= offY;
-	if (offX + newWidth >= camX+pW)
+	if (offX + newWidth >= camX + pW)
 	    newWidth = (int) camX + pW - offX;
-	if (offY + newHeight >= camY+pH)
+	if (offY + newHeight >= camY + pH)
 	    newHeight = (int) camY + pH - offY;
 //
 //	for (int y = newY; y < newHeight; y++) {
@@ -212,42 +230,50 @@ public class Screen {
 //		setLightBlock(x + offX, y + offY, sprite.getLightBlock());
 //	    }
 //	}
-	
+
 	for (int y = 0; y < newHeight; y++) {
 	    for (int x = 0; x < newWidth; x++) {
-		setPixel(x + offX, y + offY, sprite.getPixels()[x + y * sprite.getWidth()]);
+		setPixel(x + offX, y + offY, spritePixels[x + y * sprite.getWidth()]);
 		setLightBlock(x + offX, y + offY, sprite.getLightBlock());
 	    }
 	}
     }
-    
+
     public void drawRect(int offX, int offY, int width, int height, int colour) {
-	
+
 	// Rendering optimization: don't render if outside of camera
-	if (offX + width - camX < 0) return;
-	if (offY + height - camY < 0) return;
-	if (offX - camX > pW) return;
-	if (offY - camY > pH) return;
-	
+	if (offX + width - camX < 0)
+	    return;
+	if (offY + height - camY < 0)
+	    return;
+	if (offX - camX > pW)
+	    return;
+	if (offY - camY > pH)
+	    return;
+
 	for (int y = 0; y < height; y++) {
 	    setPixel(offX, y + offY, colour);
-	    setPixel(offX + width-1, y + offY, colour);
+	    setPixel(offX + width - 1, y + offY, colour);
 	}
 
 	for (int x = 0; x < width; x++) {
 	    setPixel(x + offX, offY, colour);
-	    setPixel(x + offX, offY + height-1, colour);
+	    setPixel(x + offX, offY + height - 1, colour);
 	}
     }
 
     public void fillRect(int offX, int offY, int width, int height, int colour) {
-	
+
 	// Rendering optimization: don't render if outside of camera
-	if (offX + width - camX < 0) return;
-	if (offY + height - camY < 0) return;
-	if (offX - camX > pW) return;
-	if (offY - camY > pH) return;
-	
+	if (offX + width - camX < 0)
+	    return;
+	if (offY + height - camY < 0)
+	    return;
+	if (offX - camX > pW)
+	    return;
+	if (offY - camY > pH)
+	    return;
+
 	for (int y = 0; y < height; y++) {
 	    for (int x = 0; x < width; x++) {
 		setPixel(x + offX, y + offY, colour);
@@ -340,19 +366,19 @@ public class Screen {
     }
 
     public float getCamX() {
-        return camX;
+	return camX;
     }
 
-    public void setCamX(int camX) { 
-        this.camX = camX;
+    public void setCamX(int camX) {
+	this.camX = camX;
     }
 
     public float getCamY() {
-        return camY;
+	return camY;
     }
 
     public void setCamY(int camY) {
-        this.camY = camY;
+	this.camY = camY;
     }
 
 }

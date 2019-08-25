@@ -54,10 +54,9 @@ public class Dungeon extends GameState {
 //	    walls.addObject(new Tile(i * Room.TILE_SIZE, 4*Room.HEIGHT+1, Room.TILE_SIZE,Room.TILE_SIZE,"wall", content.BOTTOM_WALL1));
 //	}
 	// Load player and camera
-	player = new Player(0, 0, 16, 16, "player", walls);
-	player.setX(rooms[startRoom].getX() + Room.WIDTH / 2 - player.getWidth() / 2);
-	player.setY(rooms[startRoom].getY() + Room.HEIGHT / 2 - player.getHeight() / 2);
-
+	int startX = rooms[startRoom].getX() + Room.WIDTH / 2 - Player.PLAYER_WIDTH / 2;
+	int startY = rooms[startRoom].getY() + Room.HEIGHT / 2 - Player.PLAYER_HEIGHT / 2;
+	player = new Player(startX, startY, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player", walls);
 	camera = new Camera(player);
 
     }
