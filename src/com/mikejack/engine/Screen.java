@@ -16,213 +16,213 @@ import com.mikejack.graphics.Sprite;
 
 public class Screen {
 
-    public static final int DEFAULT_AMBIENT_COLOUR = 0xffffffff;
+	public static final int DEFAULT_AMBIENT_COLOUR = 0xffffffff;
 
-    private GameContainer gc;
-    private ArrayList<ImageRequest> imageRequest = new ArrayList<ImageRequest>();
-    private ArrayList<LightRequest> lightRequest = new ArrayList<LightRequest>();
+	private GameContainer gc;
+	private ArrayList<ImageRequest> imageRequest = new ArrayList<ImageRequest>();
+	private ArrayList<LightRequest> lightRequest = new ArrayList<LightRequest>();
 
-    private int pW, pH;
-    private int pixels[];
-    private int zBuffer[];
-    private int lightMap[];
-    private int lightBlock[];
+	private int pW, pH;
+	private int pixels[];
+	private int zBuffer[];
+	private int lightMap[];
+	private int lightBlock[];
 
-    private static int ambientColour = DEFAULT_AMBIENT_COLOUR;
-    private int zDepth = 0;
-    private boolean processing = false;
+	private static int ambientColour = DEFAULT_AMBIENT_COLOUR;
+	private int zDepth = 0;
+	private boolean processing = false;
 
-    private float camX = 0, camY = 0;
+	private float camX = 0, camY = 0;
 
-    private Font font = Font.STANDARD;
+	private Font font = Font.STANDARD;
 
-    public Screen(GameContainer gc) {
-	this.gc = gc;
-	pW = gc.getImageWidth();
-	pH = gc.getImageHeight();
-	pixels = ((DataBufferInt) gc.getImage().getRaster().getDataBuffer()).getData();
-	zBuffer = new int[pixels.length];
-	lightMap = new int[pixels.length];
-	lightBlock = new int[pixels.length];
-    }
-
-    public void process() {
-	// Post processing. Draws alpha, lights etc..
-	processing = true;
-	Collections.sort(imageRequest, new Comparator<ImageRequest>() {
-	    @Override
-	    public int compare(ImageRequest i0, ImageRequest i1) {
-		if (i0.zDepth < i1.zDepth)
-		    return -1;
-		if (i0.zDepth > i1.zDepth)
-		    return 1;
-		return 0;
-	    }
-
-	});
-
-	// Draw alpha things
-	for (int i = 0; i < imageRequest.size(); i++) {
-	    ImageRequest ir = imageRequest.get(i);
-	    setzDepth(ir.zDepth);
-	    drawSprite(ir.sprite, ir.offX, ir.offY, false, false);
+	public Screen(GameContainer gc) {
+		this.gc = gc;
+		pW = gc.getImageWidth();
+		pH = gc.getImageHeight();
+		pixels = ((DataBufferInt) gc.getImage().getRaster().getDataBuffer()).getData();
+		zBuffer = new int[pixels.length];
+		lightMap = new int[pixels.length];
+		lightBlock = new int[pixels.length];
 	}
 
-	// Draw lighting
-	for (int i = 0; i < lightRequest.size(); i++) {
-	    LightRequest lr = lightRequest.get(i);
-	    drawLightRequest(lr.light, lr.x, lr.y);
-	}
+	public void process() {
+		// Post processing. Draws alpha, lights etc..
+		processing = true;
+		Collections.sort(imageRequest, new Comparator<ImageRequest>() {
+			@Override
+			public int compare(ImageRequest i0, ImageRequest i1) {
+				if (i0.zDepth < i1.zDepth)
+					return -1;
+				if (i0.zDepth > i1.zDepth)
+					return 1;
+				return 0;
+			}
 
-	for (int i = 0; i < pixels.length; i++) {
-	    float r = ((lightMap[i] >> 16) & 0xff) / 255f;
-	    float g = ((lightMap[i] >> 8) & 0xff) / 255f;
-	    float b = (lightMap[i] & 0xff) / 255f;
+		});
 
-	    pixels[i] = ((int) (((pixels[i] >> 16) & 0xff) * r) << 16 | (int) (((pixels[i] >> 8) & 0xff) * g) << 8
-		    | (int) ((pixels[i] & 0xff) * b));
-	}
-
-	imageRequest.clear();
-	lightRequest.clear();
-	processing = false;
-    }
-
-    public void setPixel(int x, int y, int colour) {
-	// Camera offset
-	x -= camX;
-	y -= camY;
-
-	int alpha = (colour >> 24) & 0xff;
-
-	if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) {
-	    return;
-	}
-	int index = x + y * pW;
-
-	if (zBuffer[index] > zDepth)
-	    return;
-
-	zBuffer[index] = zDepth;
-
-	if (alpha == 255) {
-	    pixels[index] = colour;
-	} else {
-	    int pixelColour = pixels[index];
-	    int newRed = ((pixelColour >> 16) & 0xff)
-		    - (int) ((((pixelColour >> 16) & 0xff) - ((colour >> 16) & 0xff)) * (alpha / 255f));
-	    int newGreen = ((pixelColour >> 8) & 0xff)
-		    - (int) ((((pixelColour >> 8) & 0xff) - ((colour >> 8) & 0xff)) * (alpha / 255f));
-	    int newBlue = (pixelColour & 0xff) - (int) (((pixelColour & 0xff) - (colour & 0xff)) * (alpha / 255f));
-
-	    pixels[index] = (newRed << 16 | newGreen << 8 | newBlue);
-	}
-    }
-
-    public void setLightMap(int x, int y, int colour) {
-	// Camera offset
-	x -= camX;
-	y -= camY;
-
-	if (x < 0 || x >= pW || y < 0 || y >= pH) {
-	    return;
-	}
-	int baseColour = lightMap[x + y * pW];
-	int finalColour = 0;
-	int maxRed = Math.max((baseColour >> 16) & 0xff, (colour >> 16) & 0xff);
-	int maxGreen = Math.max((baseColour >> 8) & 0xff, (colour >> 8) & 0xff);
-	int maxBlue = Math.max(baseColour & 0xff, colour & 0xff);
-
-	lightMap[x + y * pW] = (maxRed << 16 | maxGreen << 8 | maxBlue);
-    }
-
-    public void setLightBlock(int x, int y, int value) {
-
-	// Camera offset
-	x -= camX;
-	y -= camY;
-
-	if (x < 0 || x >= pW || y < 0 || y >= pH) {
-	    return;
-	}
-
-	if (zBuffer[x + y * pW] > zDepth)
-	    return;
-
-	lightBlock[x + y * pW] = value;
-    }
-
-    public void drawText(String text, int offX, int offY, int colour) {
-
-	int offset = 0;
-
-	for (int i = 0; i < text.length(); i++) {
-	    int unicode = text.codePointAt(i);
-
-	    for (int y = 0; y < font.getFontImage().getHeight(); y++) {
-
-		for (int x = 0; x < font.getWidths()[unicode]; x++) {
-
-		    if (font.getFontImage().getPixels()[(x + font.getOffsets()[unicode])
-			    + y * font.getFontImage().getWidth()] == 0xffffffff) {
-			setPixel(x + offX + offset, y + offY, colour);
-		    }
+		// Draw alpha things
+		for (int i = 0; i < imageRequest.size(); i++) {
+			ImageRequest ir = imageRequest.get(i);
+			setzDepth(ir.zDepth);
+			drawSprite(ir.sprite, ir.offX, ir.offY, false, false);
 		}
-	    }
 
-	    offset += font.getWidths()[unicode];
-	}
-
-    }
-
-    public void drawSprite(Sprite sprite, int offX, int offY, boolean flipVertical, boolean flipHorizontal) {
-	if (sprite.isAlpha() && !processing) {
-	    imageRequest.add(new ImageRequest(sprite, zDepth, offX, offY));
-	    return;
-	}
-
-	int spriteWidth = sprite.getWidth();
-	int spriteHeight = sprite.getHeight();
-	int spritePixels[] = new int[spriteWidth*spriteHeight];
-
-	if (!flipVertical && !flipHorizontal) {
-	    spritePixels = sprite.getPixels();
-	} else if (flipVertical) {
-	    for (int y = 0; y < spriteHeight; y++) {
-		for (int x = 0; x < spriteWidth; x++) {
-		    spritePixels[x + y * spriteWidth] = sprite.getPixels()[x + (spriteHeight - 1 - y) * spriteWidth];
+		// Draw lighting
+		for (int i = 0; i < lightRequest.size(); i++) {
+			LightRequest lr = lightRequest.get(i);
+			drawLightRequest(lr.light, lr.x, lr.y);
 		}
-	    }
-	} else if (flipHorizontal) {
-	    for (int y = 0; y < spriteHeight; y++) {
-		for (int x = 0; x < spriteWidth; x++) {
-		    spritePixels[x + y * spriteWidth] = sprite.getPixels()[(spriteWidth-1-x) + y * spriteWidth];
-		}
-	    }
-	}
-	int newX = (int) camX;
-	int newY = (int) camY;
-	int newWidth = sprite.getWidth();
-	int newHeight = sprite.getHeight();
-	// Off Screen
-	if (offX < camX - newWidth)
-	    return;
-	if (offY < camY - newHeight)
-	    return;
-	if (offX >= camX + pW)
-	    return;
-	if (offY >= camY + pH)
-	    return;
 
-	// Clipping Sprites
-	if (offX < camX)
-	    newX -= offX;
-	if (offY < camY)
-	    newY -= offY;
-	if (offX + newWidth >= camX + pW)
-	    newWidth = (int) camX + pW - offX;
-	if (offY + newHeight >= camY + pH)
-	    newHeight = (int) camY + pH - offY;
+		for (int i = 0; i < pixels.length; i++) {
+			float r = ((lightMap[i] >> 16) & 0xff) / 255f;
+			float g = ((lightMap[i] >> 8) & 0xff) / 255f;
+			float b = (lightMap[i] & 0xff) / 255f;
+
+			pixels[i] = ((int) (((pixels[i] >> 16) & 0xff) * r) << 16 | (int) (((pixels[i] >> 8) & 0xff) * g) << 8
+					| (int) ((pixels[i] & 0xff) * b));
+		}
+
+		imageRequest.clear();
+		lightRequest.clear();
+		processing = false;
+	}
+
+	public void setPixel(int x, int y, int colour) {
+		// Camera offset
+		x -= camX;
+		y -= camY;
+
+		int alpha = (colour >> 24) & 0xff;
+
+		if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) {
+			return;
+		}
+		int index = x + y * pW;
+
+		if (zBuffer[index] > zDepth)
+			return;
+
+		zBuffer[index] = zDepth;
+
+		if (alpha == 255) {
+			pixels[index] = colour;
+		} else {
+			int pixelColour = pixels[index];
+			int newRed = ((pixelColour >> 16) & 0xff)
+					- (int) ((((pixelColour >> 16) & 0xff) - ((colour >> 16) & 0xff)) * (alpha / 255f));
+			int newGreen = ((pixelColour >> 8) & 0xff)
+					- (int) ((((pixelColour >> 8) & 0xff) - ((colour >> 8) & 0xff)) * (alpha / 255f));
+			int newBlue = (pixelColour & 0xff) - (int) (((pixelColour & 0xff) - (colour & 0xff)) * (alpha / 255f));
+
+			pixels[index] = (newRed << 16 | newGreen << 8 | newBlue);
+		}
+	}
+
+	public void setLightMap(int x, int y, int colour) {
+		// Camera offset
+		x -= camX;
+		y -= camY;
+
+		if (x < 0 || x >= pW || y < 0 || y >= pH) {
+			return;
+		}
+		int baseColour = lightMap[x + y * pW];
+		int finalColour = 0;
+		int maxRed = Math.max((baseColour >> 16) & 0xff, (colour >> 16) & 0xff);
+		int maxGreen = Math.max((baseColour >> 8) & 0xff, (colour >> 8) & 0xff);
+		int maxBlue = Math.max(baseColour & 0xff, colour & 0xff);
+
+		lightMap[x + y * pW] = (maxRed << 16 | maxGreen << 8 | maxBlue);
+	}
+
+	public void setLightBlock(int x, int y, int value) {
+
+		// Camera offset
+		x -= camX;
+		y -= camY;
+
+		if (x < 0 || x >= pW || y < 0 || y >= pH) {
+			return;
+		}
+
+		if (zBuffer[x + y * pW] > zDepth)
+			return;
+
+		lightBlock[x + y * pW] = value;
+	}
+
+	public void drawText(String text, int offX, int offY, int colour) {
+
+		int offset = 0;
+
+		for (int i = 0; i < text.length(); i++) {
+			int unicode = text.codePointAt(i);
+
+			for (int y = 0; y < font.getFontImage().getHeight(); y++) {
+
+				for (int x = 0; x < font.getWidths()[unicode]; x++) {
+
+					if (font.getFontImage().getPixels()[(x + font.getOffsets()[unicode])
+							+ y * font.getFontImage().getWidth()] == 0xffffffff) {
+						setPixel(x + offX + offset, y + offY, colour);
+					}
+				}
+			}
+
+			offset += font.getWidths()[unicode];
+		}
+
+	}
+
+	public void drawSprite(Sprite sprite, int offX, int offY, boolean flipVertical, boolean flipHorizontal) {
+		if (sprite.isAlpha() && !processing) {
+			imageRequest.add(new ImageRequest(sprite, zDepth, offX, offY));
+			return;
+		}
+
+		int spriteWidth = sprite.getWidth();
+		int spriteHeight = sprite.getHeight();
+		int spritePixels[] = new int[spriteWidth * spriteHeight];
+
+		if (!flipVertical && !flipHorizontal) {
+			spritePixels = sprite.getPixels();
+		} else if (flipVertical) {
+			for (int y = 0; y < spriteHeight; y++) {
+				for (int x = 0; x < spriteWidth; x++) {
+					spritePixels[x + y * spriteWidth] = sprite.getPixels()[x + (spriteHeight - 1 - y) * spriteWidth];
+				}
+			}
+		} else if (flipHorizontal) {
+			for (int y = 0; y < spriteHeight; y++) {
+				for (int x = 0; x < spriteWidth; x++) {
+					spritePixels[x + y * spriteWidth] = sprite.getPixels()[(spriteWidth - 1 - x) + y * spriteWidth];
+				}
+			}
+		}
+		int newX = (int) camX;
+		int newY = (int) camY;
+		int newWidth = sprite.getWidth();
+		int newHeight = sprite.getHeight();
+		// Off Screen
+		if (offX < camX - newWidth)
+			return;
+		if (offY < camY - newHeight)
+			return;
+		if (offX >= camX + pW)
+			return;
+		if (offY >= camY + pH)
+			return;
+
+		// Clipping Sprites
+		if (offX < camX)
+			newX -= offX;
+		if (offY < camY)
+			newY -= offY;
+		if (offX + newWidth >= camX + pW)
+			newWidth = (int) camX + pW - offX;
+		if (offY + newHeight >= camY + pH)
+			newHeight = (int) camY + pH - offY;
 //
 //	for (int y = newY; y < newHeight; y++) {
 //	    for (int x = newX; x < newWidth; x++) {
@@ -231,154 +231,182 @@ public class Screen {
 //	    }
 //	}
 
-	for (int y = 0; y < newHeight; y++) {
-	    for (int x = 0; x < newWidth; x++) {
-		setPixel(x + offX, y + offY, spritePixels[x + y * sprite.getWidth()]);
-		setLightBlock(x + offX, y + offY, sprite.getLightBlock());
-	    }
-	}
-    }
-
-    public void drawRect(int offX, int offY, int width, int height, int colour) {
-
-	// Rendering optimization: don't render if outside of camera
-	if (offX + width - camX < 0)
-	    return;
-	if (offY + height - camY < 0)
-	    return;
-	if (offX - camX > pW)
-	    return;
-	if (offY - camY > pH)
-	    return;
-
-	for (int y = 0; y < height; y++) {
-	    setPixel(offX, y + offY, colour);
-	    setPixel(offX + width - 1, y + offY, colour);
+		for (int y = 0; y < newHeight; y++) {
+			for (int x = 0; x < newWidth; x++) {
+				setPixel(x + offX, y + offY, spritePixels[x + y * sprite.getWidth()]);
+				setLightBlock(x + offX, y + offY, sprite.getLightBlock());
+			}
+		}
 	}
 
-	for (int x = 0; x < width; x++) {
-	    setPixel(x + offX, offY, colour);
-	    setPixel(x + offX, offY + height - 1, colour);
-	}
-    }
+	public void drawRect(int offX, int offY, int width, int height, int colour) {
 
-    public void fillRect(int offX, int offY, int width, int height, int colour) {
+		// Rendering optimization: don't render if outside of camera
+		if (offX + width - camX < 0)
+			return;
+		if (offY + height - camY < 0)
+			return;
+		if (offX - camX > pW)
+			return;
+		if (offY - camY > pH)
+			return;
 
-	// Rendering optimization: don't render if outside of camera
-	if (offX + width - camX < 0)
-	    return;
-	if (offY + height - camY < 0)
-	    return;
-	if (offX - camX > pW)
-	    return;
-	if (offY - camY > pH)
-	    return;
+		for (int y = 0; y < height; y++) {
+			setPixel(offX, y + offY, colour);
+			setPixel(offX + width - 1, y + offY, colour);
+		}
 
-	for (int y = 0; y < height; y++) {
-	    for (int x = 0; x < width; x++) {
-		setPixel(x + offX, y + offY, colour);
-	    }
-	}
-    }
-
-    public void drawLight(Light light, int offX, int offY) {
-	lightRequest.add(new LightRequest(light, offX, offY));
-    }
-
-    private void drawLightRequest(Light light, int offX, int offY) {
-	for (int i = 0; i <= light.getDiameter(); i++) {
-	    drawLightLine(light, light.getRadius(), light.getRadius(), i, 0, offX, offY);
-	    drawLightLine(light, light.getRadius(), light.getRadius(), i, light.getDiameter(), offX, offY);
-	    drawLightLine(light, light.getRadius(), light.getRadius(), 0, i, offX, offY);
-	    drawLightLine(light, light.getRadius(), light.getRadius(), light.getDiameter(), i, offX, offY);
-	}
-    }
-
-    private void drawLightLine(Light light, int x0, int y0, int x1, int y1, int offX, int offY) {
-	// Bresenham's line algorithm
-	int dx = Math.abs(x1 - x0);
-	int dy = Math.abs(y1 - y0);
-
-	int sx = x0 < x1 ? 1 : -1;
-	int sy = y0 < y1 ? 1 : -1;
-
-	int err = dx - dy;
-	int err2;
-
-	while (true) {
-	    int screenX = x0 - light.getRadius() + offX;
-	    int screenY = y0 - light.getRadius() + offY;
-
-	    if (!(screenX < 0 || screenX >= pW || screenY < 0 || screenY >= pH)) {
-
-		int lightColour = light.getLightValue(x0, y0);
-		// No light
-		if (lightColour == 0)
-		    return;
-
-		// If there is an object blocking light here
-		if (lightBlock[screenX + screenY * pW] == Light.FULL)
-		    return;
-
-		// Drawing line
-		setLightMap(screenX, screenY, lightColour);
-	    }
-	    if (x0 == x1 && y0 == y1)
-		break;
-	    // Calculate line
-	    err2 = 2 * err;
-	    if (err2 > -1 * dy) {
-		err -= dy;
-		x0 += sx;
-	    }
-	    if (err2 < dx) {
-		err += dx;
-		y0 += sy;
-	    }
-
-	}
-    }
-
-    public void clear() {
-	for (int i = 0; i < pixels.length; i++) {
-	    pixels[i] = 0;
-	    zBuffer[i] = 0;
-	    lightMap[i] = ambientColour;
-	    lightBlock[i] = 0;
+		for (int x = 0; x < width; x++) {
+			setPixel(x + offX, offY, colour);
+			setPixel(x + offX, offY + height - 1, colour);
+		}
 	}
 
-    }
+	public void fillRect(int offX, int offY, int width, int height, int colour) {
 
-    public int getzDepth() {
-	return zDepth;
-    }
+		// Rendering optimization: don't render if outside of camera
+		if (offX + width - camX < 0)
+			return;
+		if (offY + height - camY < 0)
+			return;
+		if (offX - camX > pW)
+			return;
+		if (offY - camY > pH)
+			return;
 
-    public void setzDepth(int zDepth) {
-	this.zDepth = zDepth;
-    }
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				setPixel(x + offX, y + offY, colour);
+			}
+		}
+	}
 
-    public int getAmbientColour() {
-	return ambientColour;
-    }
+	public void drawCricle(int xc, int yc, int radius, int colour) {
+		// Bresenham's Circle Algorithm
+		int x = 0, y = radius, d = 3 - (2 * radius);
+		eightWaySymmetricPlot(xc, yc, x, y, colour);
 
-    public static void setAmbientLight(int newLightColour) {
-	ambientColour = newLightColour;
-    }
+		while (x <= y) {
+			if (d <= 0) {
+				d += (4 * x) + 6;
+			} else {
+				d += (4 * x) - (4 * y) + 10;
+				y -= 1;
+			}
+			x += 1;
+			eightWaySymmetricPlot(xc, yc, x, y, colour);
+		}
+	}
 
-    public float getCamX() {
-	return camX;
-    }
+	private void eightWaySymmetricPlot(int xc, int yc, int x, int y, int colour) {
+		setPixel(x + xc, y + yc, colour);
+		setPixel(x + xc, -y + yc, colour);
+		setPixel(-x + xc, -y + yc, colour);
+		setPixel(-x + xc, y + yc, colour);
+		setPixel(y + xc, x + yc, colour);
+		setPixel(y + xc, -x + yc, colour);
+		setPixel(-y + xc, -x + yc, colour);
+		setPixel(-y + xc, x + yc, colour);
+	}
 
-    public void setCamX(int camX) {
-	this.camX = camX;
-    }
+	public void drawLight(Light light, int offX, int offY) {
+		lightRequest.add(new LightRequest(light, offX, offY));
+	}
 
-    public float getCamY() {
-	return camY;
-    }
+	private void drawLightRequest(Light light, int offX, int offY) {
+		for (int i = 0; i <= light.getDiameter(); i++) {
+			drawLightLine(light, light.getRadius(), light.getRadius(), i, 0, offX, offY);
+			drawLightLine(light, light.getRadius(), light.getRadius(), i, light.getDiameter(), offX, offY);
+			drawLightLine(light, light.getRadius(), light.getRadius(), 0, i, offX, offY);
+			drawLightLine(light, light.getRadius(), light.getRadius(), light.getDiameter(), i, offX, offY);
+		}
+	}
 
-    public void setCamY(int camY) {
-	this.camY = camY;
-    }
+	private void drawLightLine(Light light, int x0, int y0, int x1, int y1, int offX, int offY) {
+		// Bresenham's line algorithm
+		int dx = Math.abs(x1 - x0);
+		int dy = Math.abs(y1 - y0);
+
+		int sx = x0 < x1 ? 1 : -1;
+		int sy = y0 < y1 ? 1 : -1;
+
+		int err = dx - dy;
+		int err2;
+
+		while (true) {
+			int screenX = x0 - light.getRadius() + offX;
+			int screenY = y0 - light.getRadius() + offY;
+
+			if (!(screenX < 0 || screenX >= pW || screenY < 0 || screenY >= pH)) {
+
+				int lightColour = light.getLightValue(x0, y0);
+				// No light
+				if (lightColour == 0)
+					return;
+
+				// If there is an object blocking light here
+				if (lightBlock[screenX + screenY * pW] == Light.FULL)
+					return;
+
+				// Drawing line
+				setLightMap(screenX, screenY, lightColour);
+			}
+			if (x0 == x1 && y0 == y1)
+				break;
+			// Calculate line
+			err2 = 2 * err;
+			if (err2 > -1 * dy) {
+				err -= dy;
+				x0 += sx;
+			}
+			if (err2 < dx) {
+				err += dx;
+				y0 += sy;
+			}
+
+		}
+	}
+
+	public void clear() {
+		for (int i = 0; i < pixels.length; i++) {
+			pixels[i] = 0;
+			zBuffer[i] = 0;
+			lightMap[i] = ambientColour;
+			lightBlock[i] = 0;
+		}
+
+	}
+
+	public int getzDepth() {
+		return zDepth;
+	}
+
+	public void setzDepth(int zDepth) {
+		this.zDepth = zDepth;
+	}
+
+	public int getAmbientColour() {
+		return ambientColour;
+	}
+
+	public static void setAmbientLight(int newLightColour) {
+		ambientColour = newLightColour;
+	}
+
+	public float getCamX() {
+		return camX;
+	}
+
+	public void setCamX(int camX) {
+		this.camX = camX;
+	}
+
+	public float getCamY() {
+		return camY;
+	}
+
+	public void setCamY(int camY) {
+		this.camY = camY;
+	}
 
 }

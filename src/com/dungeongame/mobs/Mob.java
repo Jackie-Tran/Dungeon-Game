@@ -12,16 +12,18 @@ public abstract class Mob extends GameObject{
     protected float collisionX, collisionY;
     protected int collisionWidth, collisionHeight;
     
-    public Mob(float x, float y, int width, int height, String tag, Sprite sprite) {
+    public Mob(float x, float y, int width, int height, String tag, Layer objects, Sprite sprite) {
 	super(x, y, width, height, tag, sprite);
+	this.objects = objects;
 	collisionX = x;
 	collisionY = y;
 	collisionWidth = width;
 	collisionHeight = height/2;
     }
 
-    public Mob(float x, float y, int width, int height, String tag) {
+    public Mob(float x, float y, int width, int height, String tag, Layer objects) {
 	super(x, y, width, height, tag);
+	this.objects = objects;
 	collisionX = x;
 	collisionY = y;
 	collisionWidth = width;

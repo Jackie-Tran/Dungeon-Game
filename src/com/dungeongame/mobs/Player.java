@@ -15,7 +15,6 @@ public class Player extends Mob {
     
     private float moveSpeed = 1.5f;
     private int strength = 5, dexterity = 5, intelligence = 5, luck = 5;
-    private Layer objects;
 
     private float collisionX, collisionY;
     private int collisionWidth, collisionHeight;
@@ -34,8 +33,7 @@ public class Player extends Mob {
     }
 
     public Player(float x, float y, int width, int height, String tag, Layer objects) {
-	super(x, y, width, height, tag);
-	this.objects = objects;
+	super(x, y, width, height, tag, objects);
 
 	// Collision variables
 	collisionX = x;
