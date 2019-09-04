@@ -1,5 +1,7 @@
 package com.dungeongame.mobs;
 
+import com.dungeongame.weapon.Sword;
+import com.dungeongame.weapon.Weapon;
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Input;
 import com.mikejack.graphics.Sprite;
@@ -19,6 +21,9 @@ public class Player extends Mob {
     private float collisionX, collisionY;
     private int collisionWidth, collisionHeight;
 
+    // Weapon Variables
+    Weapon weapon = null;
+    
     // Animations/Graphics
     private PlayerState currentState = PlayerState.idle;
     private final int SPRITE_WIDTH = 16, SPRITE_HEIGHT = 22;
@@ -34,7 +39,9 @@ public class Player extends Mob {
 
     public Player(float x, float y, int width, int height, String tag, Layer objects) {
 	super(x, y, width, height, tag, objects);
-
+	health = 50;
+	
+	
 	// Collision variables
 	collisionX = x;
 	collisionY = y;
@@ -42,6 +49,9 @@ public class Player extends Mob {
 	collisionWidth = width-3;
 	collisionHeight = height/2-3;
 
+	// Weapon
+	weapon = new Sword(this);
+	
 	// Loading sprites
 	playerSprites = new SpriteSheet("/player/player_spritesheet.png");
 	idleSprites = new Sprite[4];
@@ -77,6 +87,7 @@ public class Player extends Mob {
 	    animClock++;
 	}
 
+	((Sword) weapon).update();
 	// System.out.println("player x: " + x + "\tplayer y: " + y);
 
     }
@@ -97,7 +108,7 @@ public class Player extends Mob {
 		gc.getScreen().drawSprite(runningSprites[frame], (int) x, (int) y, false, true);
 	    }
 	}
-	
+	((Sword) weapon).render(gc);
 //	gc.getScreen().drawRect((int) collisionX, (int) collisionY, collisionWidth, collisionHeight, 0x5aff0000);
 //	gc.getScreen().fillRect((int) x, (int) y, 16, 16, 0x5aff0000);
     }
@@ -163,7 +174,19 @@ public class Player extends Mob {
 	if (!input.isKey(KeyEvent.VK_A) && !input.isKey(KeyEvent.VK_D)) {
 	    velX = 0;
 	}
+	
+	if (input.isKey(KeyEvent.VK_J)) {
+	    weapon.use(objects, "enemy");
+	}
 
+    }
+
+    public int getDir() {
+        return dir;
+    }
+
+    public void setDir(int dir) {
+        this.dir = dir;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.dungeongame.objects;
 
 import com.mikejack.engine.GameContainer;
+import com.mikejack.graphics.Light;
 import com.mikejack.graphics.Sprite;
 import com.mikejack.objects.GameObject;
 

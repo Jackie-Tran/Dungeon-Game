@@ -8,6 +8,7 @@ public abstract class Mob extends GameObject{
 
     protected Layer objects;
 
+    protected float health;
     protected float moveSpeed;
     protected float collisionX, collisionY;
     protected int collisionWidth, collisionHeight;
@@ -43,6 +44,14 @@ public abstract class Mob extends GameObject{
     }
     
     protected abstract boolean collision(float velX, float velY);
+
+    public float getHealth() {
+        return health;
+    }
+
+    public void setHealth(float health) {
+        this.health = health;
+    }
 
 
 }

@@ -1,5 +1,6 @@
 package com.dungeongame.dungeon;
 
+import com.mikejack.graphics.Light;
 import com.mikejack.graphics.Sprite;
 import com.mikejack.graphics.SpriteSheet;
 
@@ -52,6 +53,7 @@ public class DungeonContent {
 	    for (int i = 6; i < 10; i++) {
 		index++;
 		FLOORS[index] = spriteSheet.grabSprite(i, j, TILE_SIZE, TILE_SIZE);
+		FLOORS[index].setLightBlock(Light.NONE);
 	    }
 	}
 

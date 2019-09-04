@@ -13,7 +13,7 @@ public class Sprite {
     private BufferedImage image;
     private int pixels[];
     private boolean alpha = false;
-    private int lightBlock = Light.NONE;
+    private int lightBlock = Light.FULL;
     
     public Sprite(String path) {
 	image = null;
