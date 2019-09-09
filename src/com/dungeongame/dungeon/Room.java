@@ -3,7 +3,8 @@ package com.dungeongame.dungeon;
 import java.util.Random;
 
 import com.dungeongame.game.DungeonGame;
-import com.dungeongame.objects.Tile;
+import com.dungeongame.mobs.Player;
+import com.dungeongame.mobs.Slime;
 import com.mikejack.objects.Layer;
 
 public class Room {
@@ -11,6 +12,8 @@ public class Room {
     public static final int WIDTH = DungeonGame.WIDTH;
     public static final int HEIGHT = DungeonGame.HEIGHT;
     public static final int TILE_SIZE = 16;
+
+    private final int MAX_ENEMIES = 5;
 
     private RoomLoader roomLoader;
     private int x, y;
@@ -26,46 +29,58 @@ public class Room {
 	roomLoader = new RoomLoader();
     }
 
-    public void createRoom(Layer walls) {
-	// Generate the walls of the room based on where it has openings
+    public void createRoom(Layer objects) {
+	// Generate the objects of the room based on where it has openings
 	Random random = new Random();
-	int roomNumber = random.nextInt(1)+1;
+	int roomNumber = random.nextInt(1) + 1;
 	// Single openings
 	if (openUp && openRight && openDown && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightDownLeft/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightDownLeft/" + roomNumber + ".txt");
 	} else if (openUp && openRight && openDown) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightDown/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightDown/" + roomNumber + ".txt");
 	} else if (openUp && openRight && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightLeft/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightLeft/" + roomNumber + ".txt");
 	} else if (openUp && openDown && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpDownLeft/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpDownLeft/" + roomNumber + ".txt");
 	} else if (openRight && openDown && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightDownLeft/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightDownLeft/" + roomNumber + ".txt");
 	} else if (openUp && openRight) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRight/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRight/" + roomNumber + ".txt");
 	} else if (openUp && openDown) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpDown/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpDown/" + roomNumber + ".txt");
 	} else if (openRight && openDown) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightDown/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightDown/" + roomNumber + ".txt");
 	} else if (openUp && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpLeft/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpLeft/" + roomNumber + ".txt");
 	} else if (openRight && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightLeft/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightLeft/" + roomNumber + ".txt");
 	} else if (openDown && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openDownLeft/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openDownLeft/" + roomNumber + ".txt");
 	} else if (openUp) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUp/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openUp/" + roomNumber + ".txt");
 	} else if (openRight) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openRight/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openRight/" + roomNumber + ".txt");
 	} else if (openDown) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openDown/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openDown/" + roomNumber + ".txt");
 	} else if (openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openLeft/"+roomNumber+".txt");
+	    roomLoader.loadRoomFile("res/dungeon/rooms/openLeft/" + roomNumber + ".txt");
 	} else {
 	    return;
 	}
-	roomLoader.readRoomFile(x, y, walls);
-	
+	roomLoader.readRoomFile(x, y, objects);
+
+    }
+
+    public void addEnemies(Layer objects, Player player) {
+	Random random = new Random();
+	// Add enemies
+	for (int i = 0; i < MAX_ENEMIES; i++) {
+
+	    if (random.nextInt(5) == 0) {
+		objects.addObject(
+			new Slime(random.nextInt(WIDTH-2*TILE_SIZE) + x+TILE_SIZE, random.nextInt(HEIGHT-2*TILE_SIZE) + y+TILE_SIZE, "enemy", objects, player));
+	    }
+	}
     }
 
     public boolean isOpenUp() {

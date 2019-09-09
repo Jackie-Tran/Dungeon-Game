@@ -15,6 +15,8 @@ public class Player extends Mob {
     public static final int PLAYER_WIDTH = 16, PLAYER_HEIGHT = 22;
     private SpriteSheet playerSprites;
     
+    // Player Stats
+    private float xp, maxXp;
     private float moveSpeed = 1.5f;
     private int strength = 5, dexterity = 5, intelligence = 5, luck = 5;
 
@@ -39,8 +41,10 @@ public class Player extends Mob {
 
     public Player(float x, float y, int width, int height, String tag, Layer objects) {
 	super(x, y, width, height, tag, objects);
+	maxHealth = 50;
 	health = 50;
-	
+	maxXp = 100;
+	xp = 0;
 	
 	// Collision variables
 	collisionX = x;
@@ -187,6 +191,22 @@ public class Player extends Mob {
 
     public void setDir(int dir) {
         this.dir = dir;
+    }
+
+    public float getXp() {
+        return xp;
+    }
+
+    public void setXp(float xp) {
+        this.xp = xp;
+    }
+
+    public float getMaxXp() {
+        return maxXp;
+    }
+
+    public void setMaxXp(float maxXp) {
+        this.maxXp = maxXp;
     }
 
 }

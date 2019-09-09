@@ -8,8 +8,9 @@ public abstract class Mob extends GameObject{
 
     protected Layer objects;
 
-    protected float health;
-    protected float moveSpeed;
+    // Mob stats
+    protected float health, maxHealth, moveSpeed;
+    
     protected float collisionX, collisionY;
     protected int collisionWidth, collisionHeight;
     
@@ -52,6 +53,23 @@ public abstract class Mob extends GameObject{
     public void setHealth(float health) {
         this.health = health;
     }
+
+    public float getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(float maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public float getMoveSpeed() {
+        return moveSpeed;
+    }
+
+    public void setMoveSpeed(float moveSpeed) {
+        this.moveSpeed = moveSpeed;
+    }
+
 
 
 }

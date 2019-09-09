@@ -44,7 +44,7 @@ public class Slime extends Enemy {
 
     @Override
     public void update(GameContainer gc) {
-
+	
 	move();
 
 	// Animation Clock

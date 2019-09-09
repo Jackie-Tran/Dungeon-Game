@@ -5,6 +5,7 @@ import java.util.Random;
 import com.dungeongame.game.Camera;
 import com.dungeongame.mobs.Player;
 import com.dungeongame.mobs.Slime;
+import com.dungeongame.ui.PlayerUI;
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
 import com.mikejack.gamestate.GameState;
@@ -14,23 +15,24 @@ import com.mikejack.objects.Layer;
 /*
  * Dungeon is made up 16 rooms layed out in a 4x4 pattern. We choose one of the rooms in the first row to be our starting room
  * then we randomly choose the next room to be to the right, below, or left. We repeat this process until the last row. If
- * at the last row of levels we rnadomly choose to go down, make this room the exit. If we try to move left or right and we are
+ * at the last row of levels we randomly choose to go down, make this room the exit. If we try to move left or right and we are
  * in one of the edge rooms, make the next room below instead. All the rooms in this path will have openings to the left and right
  * and one to the next room and previous room. Paths outside this critical path may or may not have openings. These will be randomly generated.
  */
 public class Dungeon extends GameState {
 
-    // Variables for which way the next ciritcal room will be
+    // Variables for which way the next critical room will be
     private final int MOVE_UP = 0, MOVE_RIGHT = 1, MOVE_DOWN = 2, MOVE_LEFT = 3;
 
     public static DungeonContent content;
 
     private Camera camera;
-    private Player player;
     private Layer objects;
     private Room rooms[];
 
-    private Slime slime;
+
+    private Player player;
+    private PlayerUI playerUI;
 
     private int startRoom = 0, endRoom = 0;
 
@@ -42,6 +44,9 @@ public class Dungeon extends GameState {
     }
 
     public void init() {
+
+	player = new Player(100, 100, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player", objects);
+	
 	// Initialize the rooms
 	for (int i = 0; i < rooms.length; i++) {
 	    rooms[i] = new Room((i % 4) * Room.WIDTH, (i / 4) * Room.TILE_SIZE * (Room.HEIGHT / Room.TILE_SIZE), false,
@@ -51,9 +56,10 @@ public class Dungeon extends GameState {
 	// Load player and camera
 	int startX = rooms[startRoom].getX() + Room.WIDTH / 2 - Player.PLAYER_WIDTH / 2;
 	int startY = rooms[startRoom].getY() + Room.HEIGHT / 2 - Player.PLAYER_HEIGHT / 2;
-	player = new Player(100, 100, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player", objects);
 	camera = new Camera(player);
 	objects.addObject(new Slime(100, 100, "enemy", objects, player));
+	
+	playerUI = new PlayerUI(player);
     }
 
     public void update(GameContainer gc) {
@@ -61,6 +67,7 @@ public class Dungeon extends GameState {
 	player.update(gc);
 	objects.update(gc);
 	camera.update(gc);
+	playerUI.update(gc);
     }
 
     public void render(GameContainer gc, Screen screen) {
@@ -68,6 +75,7 @@ public class Dungeon extends GameState {
 	// screen.fillRect(0, 0, Room.WIDTH*4, Room.HEIGHT*4, 0xff25131a);
 	objects.render(gc);
 	player.render(gc);
+	playerUI.render(gc);
     }
 
     private void generateDungeon() {
@@ -82,6 +90,10 @@ public class Dungeon extends GameState {
 	// Create the rooms
 	for (int i = 0; i < rooms.length; i++) {
 	    rooms[i].createRoom(objects);
+	}
+	
+	for (int i = 0; i < rooms.length; i++) {
+	    rooms[i].addEnemies(objects, player);;
 	}
 
     }

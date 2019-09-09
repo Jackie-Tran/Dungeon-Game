@@ -14,6 +14,7 @@ public abstract class Weapon {
     protected GameObject parent;
     // Position of where the weapon will be used
     protected float x, y;
+    protected float knockBack = 5;
 
     public Weapon(GameObject parent) {
 	this.parent = parent;

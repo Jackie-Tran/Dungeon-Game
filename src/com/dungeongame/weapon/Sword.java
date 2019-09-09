@@ -23,6 +23,7 @@ public class Sword extends Weapon {
 	super(parent);
 	width = 17;
 	height = 20;
+	knockBack = 25;
     }
 
     public void update() {
@@ -33,15 +34,14 @@ public class Sword extends Weapon {
 	    x = parent.getX() - parent.getWidth();
 	    y = parent.getY();
 	}
-	
-	
+
 	// Cooldown timer for weapon
 	if (timer < cooldown) {
 	    timer++;
 	} else {
 	    canUse = true;
 	}
-	
+
 	// Visual active frames timer (how long the sprite appears on screen)
 	if (!canUse) {
 	    if (activeTimer < activeLength) {
@@ -81,7 +81,9 @@ public class Sword extends Weapon {
 	    if (object.getTag().equals(targetTag)) {
 		if (object.getX() < x + width && object.getX() + object.getWidth() > x && object.getY() < y + height
 			&& object.getY() + object.getHeight() > y) {
-		    objects.removeObject(object);
+
+		    applyHit((Mob) object, objects);
+
 		}
 	    }
 
@@ -91,6 +93,25 @@ public class Sword extends Weapon {
 	activeTimer = 0;
 	canUse = false;
 
+    }
+
+    private void applyHit(Mob target, Layer objects) {
+	Random random = new Random();
+	int averageDamage = 5; // TEMP
+	int damage = random.nextInt(3) + averageDamage;
+	target.setHealth(target.getHealth() - damage);
+
+	if (target.getHealth() <= 0) {
+	    objects.removeObject(target);
+	    return;
+	}
+	
+	// Knock back effect
+	if (target.getX() > parent.getX()) {
+	    target.setX(target.getX() + knockBack);
+	} else if (target.getX() < parent.getX()) {
+	    target.setX(target.getX() - knockBack); 
+	}
     }
 
 }
