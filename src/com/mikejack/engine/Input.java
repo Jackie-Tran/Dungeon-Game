@@ -16,7 +16,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     private boolean keys[] = new boolean[NUM_KEYS];
     private boolean keysLast[] = new boolean[NUM_KEYS];
     
-    private final int NUM_BUTTONS = 3;
+    private final int NUM_BUTTONS = 4;
     private boolean buttons[] = new boolean[NUM_BUTTONS];
     private boolean buttonsLast[] = new boolean[NUM_BUTTONS];
     
@@ -99,6 +99,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 
     @Override
     public void mousePressed(MouseEvent e) {
+	System.out.println(e.getButton());
 	buttons[e.getButton()] = true;
 	
     }

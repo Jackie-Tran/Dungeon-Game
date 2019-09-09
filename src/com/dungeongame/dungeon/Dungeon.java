@@ -6,6 +6,7 @@ import com.dungeongame.game.Camera;
 import com.dungeongame.mobs.Player;
 import com.dungeongame.mobs.Slime;
 import com.dungeongame.ui.PlayerUI;
+import com.mikejack.audio.AudioClip;
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
 import com.mikejack.gamestate.GameState;
@@ -29,6 +30,7 @@ public class Dungeon extends GameState {
     private Camera camera;
     private Layer objects;
     private Room rooms[];
+    private AudioClip bgm;
 
 
     private Player player;
@@ -60,6 +62,9 @@ public class Dungeon extends GameState {
 	objects.addObject(new Slime(100, 100, "enemy", objects, player));
 	
 	playerUI = new PlayerUI(player);
+	
+	bgm = new AudioClip("/dungeon/music/bgm.wav");
+	bgm.loop();
     }
 
     public void update(GameContainer gc) {

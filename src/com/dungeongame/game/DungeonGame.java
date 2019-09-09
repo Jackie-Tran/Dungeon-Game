@@ -9,7 +9,7 @@ import com.mikejack.gamestate.GameStateManager;
 public class DungeonGame extends AbstractGame{
 
     public static final int WIDTH=320, HEIGHT=180, SCALE=4;
-    public static final String TITLE = "Dungeon Game";
+    public static final String TITLE = "Drinking Water - Jackie Tran";
     
     public static final int DUNGEON_STATE = 1;
     
@@ -18,7 +18,7 @@ public class DungeonGame extends AbstractGame{
     
     public DungeonGame() {
 	gsm = new GameStateManager();
-	gsm.setState(new Dungeon(gsm));
+	gsm.setState(new MainMenu(gsm));
     }
 
     @Override

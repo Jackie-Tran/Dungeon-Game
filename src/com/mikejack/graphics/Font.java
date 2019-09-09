@@ -4,6 +4,7 @@ public class Font {
 	
 	//will be standard font that will load in
 	public static final Font STANDARD = new Font("/fonts/comic.png");
+	public static final Font LARGE = new Font("/fonts/large.png");
 	
 	private Sprite fontImage;
 	private int[] offsets;

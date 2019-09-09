@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.Random;
 
+import com.mikejack.graphics.Font;
+
 //Game container class "contains the game"
 //Game loop = a while loop that loops the game until the game is over
 //Game engine = engine starts up game loop and loads all resources and controls user inputs
@@ -126,7 +128,7 @@ public class GameContainer extends Canvas implements Runnable {
 	game.render(this, screen);
 	screen.process();
 	if (showFps)
-	    screen.drawText("FPS: " + Integer.toString(FPS), (int) screen.getCamX(), (int) screen.getCamY(), 0xffffffff);
+	    screen.drawText("FPS: " + Integer.toString(FPS), (int) screen.getCamX(), (int) screen.getCamY(), 0xffffffff, Font.STANDARD);
 	g.drawImage(image, 0, 0, width * scale, height * scale, null);
 	g.dispose();
 	bs.show();

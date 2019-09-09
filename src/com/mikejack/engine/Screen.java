@@ -34,8 +34,6 @@ public class Screen {
 
 	private float camX = 0, camY = 0;
 
-	private Font font = Font.STANDARD;
-
 	public Screen(GameContainer gc) {
 		this.gc = gc;
 		pW = gc.getImageWidth();
@@ -152,7 +150,7 @@ public class Screen {
 		lightBlock[x + y * pW] = value;
 	}
 
-	public void drawText(String text, int offX, int offY, int colour) {
+	public void drawText(String text, int offX, int offY, int colour, Font font) {
 
 		int offset = 0;
 
