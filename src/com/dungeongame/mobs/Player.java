@@ -92,7 +92,7 @@ public class Player extends Mob {
 	}
 
 	((Sword) weapon).update();
-	// System.out.println("player x: " + x + "\tplayer y: " + y);
+	//System.out.println("player x: " + x + "\tplayer y: " + y);
 
     }
 
@@ -145,7 +145,7 @@ public class Player extends Mob {
 	for (GameObject object : objects.getGameObjects()) {
 	    float nextX = collisionX + velX;
 	    float nextY = collisionY + velY;
-	    if (object.getTag().equals("wall")) {
+	    if (object.getTag().equals("solid")) {
 		if (nextX < object.getX() + object.getWidth() && nextX + collisionWidth > object.getX()
 			&& nextY < object.getY() + object.getHeight() && nextY + collisionHeight > object.getY()) {
 		    return true;

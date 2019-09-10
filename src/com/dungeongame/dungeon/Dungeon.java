@@ -63,7 +63,7 @@ public class Dungeon extends GameState {
 	
 	playerUI = new PlayerUI(player);
 	
-	bgm = new AudioClip("/dungeon/music/bgm.wav");
+	bgm = new AudioClip("/dungeon/music/runic-melody.wav");
 	bgm.loop();
     }
 

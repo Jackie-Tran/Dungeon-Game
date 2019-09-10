@@ -75,13 +75,13 @@ public class RoomLoader {
 		} else if (tileid == TileId.LEFT_WALL.id) {
 		    objects.addObject(makeLeftWall(newX, newY));
 		} else if (tileid == TileId.TOP_RIGHT_CORNER.id) {
-		    objects.addObject(new Tile(newX, newY, TILE_SIZE, TILE_SIZE, "wall", Dungeon.content.TOP_RIGHT_CORNER_WALL));
+		    objects.addObject(new Tile(newX, newY, TILE_SIZE, TILE_SIZE, "solid", Dungeon.content.TOP_RIGHT_CORNER_WALL));
 		} else if (tileid == TileId.BOTTOM_RIGHT_CORNER.id) {
-		    objects.addObject(new Tile(newX, newY, TILE_SIZE, TILE_SIZE, "wall", Dungeon.content.BOTTOM_RIGHT_CORNER_WALL));
+		    objects.addObject(new Tile(newX, newY, TILE_SIZE, TILE_SIZE, "solid", Dungeon.content.BOTTOM_RIGHT_CORNER_WALL));
 		} else if (tileid == TileId.BOTTOM_LEFT_CORNER.id) {
-		    objects.addObject(new Tile(newX, newY, TILE_SIZE, TILE_SIZE, "wall", Dungeon.content.BOTTOM_LEFT_CORNER_WALL));
+		    objects.addObject(new Tile(newX, newY, TILE_SIZE, TILE_SIZE, "solid", Dungeon.content.BOTTOM_LEFT_CORNER_WALL));
 		} else if (tileid == TileId.TOP_LEFT_CORNER.id) {
-		    objects.addObject(new Tile(newX, newY, TILE_SIZE, TILE_SIZE, "wall", Dungeon.content.TOP_LEFT_CORNER_WALL));
+		    objects.addObject(new Tile(newX, newY, TILE_SIZE, TILE_SIZE, "solid", Dungeon.content.TOP_LEFT_CORNER_WALL));
 		}
 	    }
 	}
@@ -90,7 +90,7 @@ public class RoomLoader {
     private Tile makeTopWall(float x, float y) {
 	Random random = new Random();
 	int tileType = random.nextInt(4);
-	Tile wall = new Tile(x, y, TILE_SIZE, TILE_SIZE, "wall");
+	Tile wall = new Tile(x, y, TILE_SIZE, TILE_SIZE, "solid");
 	if (tileType == 0) {
 	    wall.setSprite(Dungeon.content.TOP_WALL1);
 	} else if (tileType == 1) {
@@ -122,7 +122,7 @@ public class RoomLoader {
     private Tile makeBottomWall(float x, float y) {
 	Random random = new Random();
 	int tileType = random.nextInt(4);
-	Tile wall = new Tile(x, y, TILE_SIZE, TILE_SIZE, "wall");
+	Tile wall = new Tile(x, y, TILE_SIZE, TILE_SIZE, "solid");
 	if (tileType == 0) {
 	    wall.setSprite(Dungeon.content.BOTTOM_WALL1);
 	} else if (tileType == 1) {
@@ -138,7 +138,7 @@ public class RoomLoader {
     private Tile makeLeftWall(float x, float y) {
 	Random random = new Random();
 	int tileType = random.nextInt(4);
-	Tile wall = new Tile(x, y, TILE_SIZE, TILE_SIZE, "wall");
+	Tile wall = new Tile(x, y, TILE_SIZE, TILE_SIZE, "solid");
 	if (tileType == 0) {
 	    wall.setSprite(Dungeon.content.LEFT_WALL1);
 	} else if (tileType == 1) {

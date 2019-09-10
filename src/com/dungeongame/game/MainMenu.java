@@ -1,6 +1,7 @@
 package com.dungeongame.game;
 
 import com.dungeongame.dungeon.Dungeon;
+import com.dungeongame.game.village.Village;
 import com.dungeongame.ui.Button;
 import com.mikejack.audio.AudioClip;
 import com.mikejack.engine.GameContainer;
@@ -70,7 +71,7 @@ public class MainMenu extends GameState{
 	
 	if (playButton.isClicked()) {
 	    menuMusic.stop();
-	    gsm.setState(new Dungeon(gsm));
+	    gsm.setState(new Village(gsm));
 	}
 	
 	if (controlsButton.isClicked()) {

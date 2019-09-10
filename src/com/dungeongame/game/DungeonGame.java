@@ -8,7 +8,7 @@ import com.mikejack.gamestate.GameStateManager;
 
 public class DungeonGame extends AbstractGame{
 
-    public static final int WIDTH=320, HEIGHT=180, SCALE=4;
+    public static final int WIDTH=320, HEIGHT=180, SCALE=3;
     public static final String TITLE = "Drinking Water - Jackie Tran";
     
     public static final int DUNGEON_STATE = 1;

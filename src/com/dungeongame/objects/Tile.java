@@ -11,8 +11,8 @@ public class Tile extends GameObject {
 	super(x, y, width, height, tag);
     }
 
-    public Tile (float x, float y, int width, int height, String tag, Sprite sprite) {
-	super(x,y,width,height,tag,sprite);
+    public Tile(float x, float y, int width, int height, String tag, Sprite sprite) {
+	super(x, y, width, height, tag, sprite);
     }
 
     @Override
@@ -23,8 +23,12 @@ public class Tile extends GameObject {
 
     @Override
     public void render(GameContainer gc) {
-	gc.getScreen().drawSprite(sprite, (int) x, (int) y, false, false);
-	//gc.getScreen().drawRect((int) x, (int) y, width, height, 0x55000000);
+	// gc.getScreen().drawSprite(sprite, (int) x, (int) y, false, false);
+	if (tag.equals("solid")) {
+	    gc.getScreen().drawRect((int) x, (int) y, width, height, 0xffff0000);
+	} else {
+	    gc.getScreen().drawRect((int) x, (int) y, width, height, 0xff00ff00);
+	}
 
     }
 
