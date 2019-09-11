@@ -106,7 +106,7 @@ public class RoomLoader {
     private Tile makeRightWall(float x, float y) {
 	Random random = new Random();
 	int tileType = random.nextInt(4);
-	Tile wall = new Tile(x, y, TILE_SIZE, TILE_SIZE, "wall");
+	Tile wall = new Tile(x, y, TILE_SIZE, TILE_SIZE, "solid");
 	if (tileType == 0) {
 	    wall.setSprite(Dungeon.content.RIGHT_WALL1);
 	} else if (tileType == 1) {

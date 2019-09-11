@@ -5,7 +5,7 @@ import com.mikejack.graphics.Sprite;
 
 public abstract class GameObject {
 
-    protected Sprite sprite = Sprite.DEFAULT;
+    protected Sprite sprite;
     protected String tag;
     protected float x, y;
     protected int width, height;

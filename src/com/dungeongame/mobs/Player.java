@@ -150,6 +150,11 @@ public class Player extends Mob {
 			&& nextY < object.getY() + object.getHeight() && nextY + collisionHeight > object.getY()) {
 		    return true;
 		}
+	    } else if (object.getTag().equals("door")) {
+		if (nextX < object.getX() + object.getWidth() && nextX + collisionWidth > object.getX()
+			&& nextY < object.getY() + object.getHeight() && nextY + collisionHeight > object.getY()) {
+		    
+		}
 	    }
 	}
 	return false;

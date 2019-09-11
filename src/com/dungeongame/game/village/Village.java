@@ -4,8 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import com.dungeongame.dungeon.Dungeon;
 import com.dungeongame.game.Camera;
+import com.dungeongame.game.DungeonGame;
 import com.dungeongame.mobs.Player;
+import com.dungeongame.objects.Door;
 import com.dungeongame.objects.Tile;
 import com.mikejack.audio.AudioClip;
 import com.mikejack.engine.GameContainer;
@@ -25,6 +28,7 @@ public class Village extends GameState {
     private Layer objects;
     private Camera camera;
     private Player player;
+    private Door door;
 
     // Variables for loading solid tiles
     private final String path = "res/village/village.txt";
@@ -36,7 +40,8 @@ public class Village extends GameState {
 	
 	objects = new Layer();
 	player = new Player(120, 120, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player", objects);
-	camera = new Camera(player);
+	door = new Door(400, 36, 32, 18, player, Door.DUNGEON, this);
+	camera = new Camera(player, 30 * DungeonGame.TILE_SIZE, 30 * DungeonGame.TILE_SIZE);
 	bgm = new AudioClip("/village/bgm.wav");
 
 	loadSolidTiles();
@@ -55,6 +60,7 @@ public class Village extends GameState {
 	// TODO Auto-generated method stub
 	player.update(gc);
 	objects.update(gc);
+	door.update(gc);
 	camera.update(gc);
     }
 
@@ -63,9 +69,10 @@ public class Village extends GameState {
 	// TODO Auto-generated method stub
 	// objects.render(gc);
 	screen.drawSprite(villageBottomLayer, 0, 0, false, false);
-	objects.render(gc);
+	//objects.render(gc);
 	player.render(gc);
 	screen.drawSprite(villageTopLayer, 0, 0, false, false);
+	door.render(gc);
     }
 
     @Override
@@ -99,5 +106,14 @@ public class Village extends GameState {
 	}
 
     }
+
+    @Override
+    public void changeState(GameState gameState) {
+	bgm.stop();
+	gsm.setState(gameState);
+	
+    }
+    
+    
 
 }

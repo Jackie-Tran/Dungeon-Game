@@ -70,8 +70,8 @@ public class MainMenu extends GameState{
 	
 	
 	if (playButton.isClicked()) {
-	    menuMusic.stop();
-	    gsm.setState(new Village(gsm));
+	    changeState(new Village(gsm));
+	    return;
 	}
 	
 	if (controlsButton.isClicked()) {
@@ -106,6 +106,12 @@ public class MainMenu extends GameState{
     public void keyReleased(int k) {
 	// TODO Auto-generated method stub
 	
+    }
+
+    @Override
+    public void changeState(GameState gameState) {
+	menuMusic.stop();
+	gsm.setState(gameState);
     }
 
 }

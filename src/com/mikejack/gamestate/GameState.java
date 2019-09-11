@@ -14,8 +14,21 @@ public abstract class GameState {
 	public abstract void init();	
 	public abstract void update(GameContainer gc);
 	public abstract void render(GameContainer gc, Screen screen);
+	public abstract void changeState(GameState gameState);
 	public abstract void keyPressed(int k);
 	public abstract void keyReleased(int k);
+
+	
+	
+	public GameStateManager getGsm() {
+	    return gsm;
+	}
+
+	public void setGsm(GameStateManager gsm) {
+	    this.gsm = gsm;
+	}
+	
+	
 	
 }
 	

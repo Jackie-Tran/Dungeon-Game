@@ -32,7 +32,6 @@ public class Dungeon extends GameState {
     private Room rooms[];
     private AudioClip bgm;
 
-
     private Player player;
     private PlayerUI playerUI;
 
@@ -48,7 +47,7 @@ public class Dungeon extends GameState {
     public void init() {
 
 	player = new Player(100, 100, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player", objects);
-	
+
 	// Initialize the rooms
 	for (int i = 0; i < rooms.length; i++) {
 	    rooms[i] = new Room((i % 4) * Room.WIDTH, (i / 4) * Room.TILE_SIZE * (Room.HEIGHT / Room.TILE_SIZE), false,
@@ -58,11 +57,13 @@ public class Dungeon extends GameState {
 	// Load player and camera
 	int startX = rooms[startRoom].getX() + Room.WIDTH / 2 - Player.PLAYER_WIDTH / 2;
 	int startY = rooms[startRoom].getY() + Room.HEIGHT / 2 - Player.PLAYER_HEIGHT / 2;
-	camera = new Camera(player);
+	player.setX(startX);
+	player.setY(startY);
+	camera = new Camera(player, 4 * Room.WIDTH, 4 * Room.HEIGHT);
 	objects.addObject(new Slime(100, 100, "enemy", objects, player));
-	
+
 	playerUI = new PlayerUI(player);
-	
+
 	bgm = new AudioClip("/dungeon/music/runic-melody.wav");
 	bgm.loop();
     }
@@ -96,9 +97,10 @@ public class Dungeon extends GameState {
 	for (int i = 0; i < rooms.length; i++) {
 	    rooms[i].createRoom(objects);
 	}
-	
+
 	for (int i = 0; i < rooms.length; i++) {
-	    rooms[i].addEnemies(objects, player);;
+	    rooms[i].addEnemies(objects, player);
+	    ;
 	}
 
     }
@@ -253,6 +255,13 @@ public class Dungeon extends GameState {
     public void keyReleased(int arg0) {
 	// TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void changeState(GameState gameState) {
+	bgm.stop();
+	gsm.setState(gameState);
+	
     }
 
 }

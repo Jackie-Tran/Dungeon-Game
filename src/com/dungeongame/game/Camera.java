@@ -9,11 +9,14 @@ import com.mikejack.objects.GameObject;
 public class Camera {
 
     private float x, y;
+    private float maxX, maxY;
     private float targetX, targetY;
     private GameObject target;
 
-    public Camera(GameObject target) {
+    public Camera(GameObject target, float maxX, float maxY) {
 	this.target = target;
+	this.maxX = maxX;
+	this.maxY = maxY;
 	x = (target.getX() + target.getWidth() / 2) - DungeonGame.WIDTH / 2;
 	y = (target.getY() + target.getHeight() / 2) - DungeonGame.HEIGHT / 2;
     }
@@ -29,14 +32,14 @@ public class Camera {
 	// Bounding the camera to the map size
 	if (x < 0) {
 	    x = 0;
-	} else if (x > 3 * Room.WIDTH) {
-	    x = 3 * Room.WIDTH;
+	} else if (x >= maxX - DungeonGame.WIDTH) {
+	    x = maxX - DungeonGame.WIDTH;
 	}
 
 	if (y < 0) {
 	    y = 0;
-	} else if (y > 3 * Room.HEIGHT) {
-	    y = 3 * Room.HEIGHT;
+	} else if (y >= maxY - DungeonGame.HEIGHT) {
+	    y = maxY - DungeonGame.HEIGHT;
 	}
 	
 	gc.getScreen().setCamX((int) x);

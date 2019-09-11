@@ -23,11 +23,14 @@ public class Tile extends GameObject {
 
     @Override
     public void render(GameContainer gc) {
-	// gc.getScreen().drawSprite(sprite, (int) x, (int) y, false, false);
-	if (tag.equals("solid")) {
-	    gc.getScreen().drawRect((int) x, (int) y, width, height, 0xffff0000);
+	if (sprite == null) {
+	    if (tag.equals("solid")) {
+		gc.getScreen().drawRect((int) x, (int) y, width, height, 0xffff0000);
+	    } else {
+		gc.getScreen().drawRect((int) x, (int) y, width, height, 0xff00ff00);
+	    }
 	} else {
-	    gc.getScreen().drawRect((int) x, (int) y, width, height, 0xff00ff00);
+	    gc.getScreen().drawSprite(sprite, (int) x, (int) y, false, false); 
 	}
 
     }

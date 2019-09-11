@@ -1,6 +1,6 @@
 package com.dungeongame.game;
 
-import com.dungeongame.dungeon.Dungeon;
+import com.dungeongame.game.village.Village;
 import com.mikejack.engine.AbstractGame;
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
@@ -8,6 +8,8 @@ import com.mikejack.gamestate.GameStateManager;
 
 public class DungeonGame extends AbstractGame{
 
+    public static final int TILE_SIZE = 16;
+    
     public static final int WIDTH=320, HEIGHT=180, SCALE=3;
     public static final String TITLE = "Drinking Water - Jackie Tran";
     
