@@ -3,8 +3,10 @@ package com.dungeongame.dungeon;
 import java.util.Random;
 
 import com.dungeongame.game.Camera;
+import com.dungeongame.game.village.Village;
 import com.dungeongame.mobs.Player;
 import com.dungeongame.mobs.Slime;
+import com.dungeongame.objects.Door;
 import com.dungeongame.ui.PlayerUI;
 import com.mikejack.audio.AudioClip;
 import com.mikejack.engine.GameContainer;
@@ -26,6 +28,7 @@ public class Dungeon extends GameState {
     private final int MOVE_UP = 0, MOVE_RIGHT = 1, MOVE_DOWN = 2, MOVE_LEFT = 3;
 
     public static DungeonContent content;
+    public static final int DUNGEON_SIZE = 5;
 
     private Camera camera;
     private Layer objects;
@@ -41,7 +44,7 @@ public class Dungeon extends GameState {
 	super(gsm);
 	content = new DungeonContent();
 	objects = new Layer();
-	rooms = new Room[16];
+	rooms = new Room[DUNGEON_SIZE * DUNGEON_SIZE];
     }
 
     public void init() {
@@ -50,7 +53,7 @@ public class Dungeon extends GameState {
 
 	// Initialize the rooms
 	for (int i = 0; i < rooms.length; i++) {
-	    rooms[i] = new Room((i % 4) * Room.WIDTH, (i / 4) * Room.TILE_SIZE * (Room.HEIGHT / Room.TILE_SIZE), false,
+	    rooms[i] = new Room((i % DUNGEON_SIZE) * Room.WIDTH, (i / DUNGEON_SIZE) * Room.TILE_SIZE * (Room.HEIGHT / Room.TILE_SIZE), false,
 		    false, false, false);
 	}
 	generateDungeon();
@@ -59,8 +62,7 @@ public class Dungeon extends GameState {
 	int startY = rooms[startRoom].getY() + Room.HEIGHT / 2 - Player.PLAYER_HEIGHT / 2;
 	player.setX(startX);
 	player.setY(startY);
-	camera = new Camera(player, 4 * Room.WIDTH, 4 * Room.HEIGHT);
-	objects.addObject(new Slime(100, 100, "enemy", objects, player));
+	camera = new Camera(player, DUNGEON_SIZE * Room.WIDTH, DUNGEON_SIZE * Room.HEIGHT);
 
 	playerUI = new PlayerUI(player);
 
@@ -100,15 +102,17 @@ public class Dungeon extends GameState {
 
 	for (int i = 0; i < rooms.length; i++) {
 	    rooms[i].addEnemies(objects, player);
-	    ;
 	}
 
+	System.out.println("END ROOM: " + endRoom);
+	System.out.println("EXIT POS:\t X: " + rooms[endRoom].getX() + 100 + "\t Y: " + rooms[endRoom].getY() + 100);
+	objects.addObject(new Door(rooms[endRoom].getX() + 100, rooms[endRoom].getY() + 100, 16, 16, player, Door.VILLAGE, this));
     }
 
     private void generateCriticalPath() {
 	Random random = new Random();
 	// Choose a start room in the first row
-	startRoom = random.nextInt(4);
+	startRoom = random.nextInt(DUNGEON_SIZE);
 	int currentRoom = startRoom;
 	int prevDir = 0;
 	int nextDir = 0;
@@ -132,37 +136,37 @@ public class Dungeon extends GameState {
 
 	    if (nextDir == MOVE_RIGHT) {
 		// If we are in the right column of rooms move down instead
-		if ((currentRoom + 1) % 4 == 0) {
+		if ((currentRoom + 1) % DUNGEON_SIZE == 0) {
 		    if (currentRoom == rooms.length - 1) {
 			// Case we are in the bottom right room
 			endRoom = currentRoom;
 			break;
 		    }
 		    rooms[currentRoom].setOpenDown(true);
-		    currentRoom += 4;
+		    currentRoom += DUNGEON_SIZE;
 		    rooms[currentRoom].setOpenUp(true);
 		    continue;
 		}
 		currentRoom++;
 	    } else if (nextDir == MOVE_DOWN) {
 		// If we are in the bottom row of rooms make the current room the end room
-		if (currentRoom >= 12) {
+		if (currentRoom >= DUNGEON_SIZE*(DUNGEON_SIZE-1)) {
 		    endRoom = currentRoom;
 		    break;
 		}
 		rooms[currentRoom].setOpenDown(true);
-		currentRoom += 4;
+		currentRoom += DUNGEON_SIZE;
 		rooms[currentRoom].setOpenUp(true);
 	    } else { // Moving left
 		     // If we are in the left column of rooms move down instead
-		if (currentRoom % 4 == 0) {
-		    if (currentRoom == rooms.length - 4) {
+		if (currentRoom % DUNGEON_SIZE == 0) {
+		    if (currentRoom == rooms.length - DUNGEON_SIZE) {
 			// Case we are in the bottom left room
 			endRoom = currentRoom;
 			break;
 		    }
 		    rooms[currentRoom].setOpenDown(true);
-		    currentRoom += 4;
+		    currentRoom += DUNGEON_SIZE;
 		    rooms[currentRoom].setOpenUp(true);
 		    continue;
 		}
@@ -196,22 +200,22 @@ public class Dungeon extends GameState {
     private void fixDungeonBorder() {
 	// Check border rooms to see if there's an opening going no where
 	// Top rooms
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < DUNGEON_SIZE; i++) {
 	    if (rooms[i].isOpenUp())
 		rooms[i].setOpenUp(false);
 	}
 	// Bottom rooms
-	for (int i = 12; i < rooms.length; i++) {
+	for (int i = DUNGEON_SIZE*(DUNGEON_SIZE-1); i < rooms.length; i++) {
 	    if (rooms[i].isOpenDown())
 		rooms[i].setOpenDown(false);
 	}
 	// Left rooms
-	for (int i = 0; i < rooms.length; i += 4) {
+	for (int i = 0; i < rooms.length; i += DUNGEON_SIZE) {
 	    if (rooms[i].isOpenLeft())
 		rooms[i].setOpenLeft(false);
 	}
 	// Right rooms
-	for (int i = 3; i < rooms.length; i += 4) {
+	for (int i = DUNGEON_SIZE-1; i < rooms.length; i += DUNGEON_SIZE) {
 	    if (rooms[i].isOpenRight())
 		rooms[i].setOpenRight(false);
 	}
@@ -220,7 +224,7 @@ public class Dungeon extends GameState {
     private void fixDeadOpenings() {
 	// Fix openings leading no where
 	for (int i = 0; i < rooms.length; i++) {
-	    int up = i - 4, right = i + 1, down = i + 4, left = i - 1;
+	    int up = i - DUNGEON_SIZE, right = i + 1, down = i + DUNGEON_SIZE, left = i - 1;
 	    // Make sure the indexes are in the bounds
 	    if (rooms[i].isOpenUp() && (up >= 0 && up < rooms.length) && !rooms[up].isOpenDown()) {
 		rooms[i].setOpenUp(false);

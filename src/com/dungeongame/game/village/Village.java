@@ -39,7 +39,7 @@ public class Village extends GameState {
 	villageTopLayer = new Sprite("/village/villageTopLayer.png");
 	
 	objects = new Layer();
-	player = new Player(120, 120, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player", objects);
+	player = new Player(360, 400, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player", objects);
 	door = new Door(400, 36, 32, 18, player, Door.DUNGEON, this);
 	camera = new Camera(player, 30 * DungeonGame.TILE_SIZE, 30 * DungeonGame.TILE_SIZE);
 	bgm = new AudioClip("/village/bgm.wav");

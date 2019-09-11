@@ -124,7 +124,7 @@ public class Slime extends Enemy {
 	    
 	    float nextX = collisionX + velX;
 	    float nextY = collisionY + velY;
-	    if (object.getTag().equals("wall") || object.getTag().equals("enemy") || object.getTag().equals("player")) {
+	    if (object.getTag().equals("solid") || object.getTag().equals("enemy") || object.getTag().equals("player")) {
 		if (nextX < object.getX() + object.getWidth() && nextX + collisionWidth > object.getX()
 			&& nextY < object.getY() + object.getHeight() && nextY + collisionHeight > object.getY()) {
 		    return true;

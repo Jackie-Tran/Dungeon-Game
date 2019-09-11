@@ -78,7 +78,7 @@ public class Room {
 
 	    if (random.nextInt(5) == 0) {
 		objects.addObject(
-			new Slime(random.nextInt(WIDTH-2*TILE_SIZE) + x+TILE_SIZE, random.nextInt(HEIGHT-2*TILE_SIZE) + y+TILE_SIZE, "enemy", objects, player));
+			new Slime(random.nextInt(WIDTH - 3*TILE_SIZE) + x + TILE_SIZE*2, random.nextInt(HEIGHT - 3*TILE_SIZE) + y + TILE_SIZE*2, "enemy", objects, player));
 	    }
 	}
     }

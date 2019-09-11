@@ -31,14 +31,10 @@ public class Door extends Interactable{
     @Override
     public void update(GameContainer gc) {
 	// TODO Auto-generated method stub
-	x = 400;
-	y = 36;
-	width = 32;
-	height = 18;
 	
 	if (player.getX() < x + width && player.getX() + player.getWidth() > x &&
 		player.getY() < y + height && player.getY() + player.getHeight() > y) {
-	    if (gc.getInput().isKey(KeyEvent.VK_K)) {
+	    if (gc.getInput().isKey(KeyEvent.VK_H)) {
 		action();
 	    }
 	}
