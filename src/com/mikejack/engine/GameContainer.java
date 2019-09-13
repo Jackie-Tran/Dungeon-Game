@@ -35,17 +35,17 @@ public class GameContainer extends Canvas implements Runnable {
     private Screen screen;
     private Input input;
 
-    public GameContainer(int width, int height, int scale, String title, AbstractGame game) {
+    public GameContainer(int width, int height, int scale, String title, AbstractGame game, boolean isApplet) {
 	this.game = game;
 	this.width = width;
 	this.height = height;
 	this.scale = scale;
 	this.title = title;
-	window = new Window(title, width, height, scale, this);
+	if (!isApplet)
+	    window = new Window(title, width, height, scale, this);
 	image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	screen = new Screen(this);
 	input = new Input(this);
-
     }
 
     public void init() {
