@@ -34,7 +34,7 @@ public class DungeonGame extends AbstractGame{
     }
     
     public static void main(String args[]) {
-	GameContainer gc = new GameContainer(WIDTH, HEIGHT, SCALE, TITLE, new DungeonGame());
+	GameContainer gc = new GameContainer(WIDTH, HEIGHT, SCALE, TITLE, new DungeonGame(), false);
 	gc.setFpsVisibility(true);
 	gc.requestFocus();
 	gc.start();

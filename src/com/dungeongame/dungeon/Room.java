@@ -35,35 +35,35 @@ public class Room {
 	int roomNumber = random.nextInt(1) + 1;
 	// Single openings
 	if (openUp && openRight && openDown && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightDownLeft/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openUpRightDownLeft/" + roomNumber + ".txt");
 	} else if (openUp && openRight && openDown) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightDown/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openUpRightDown/" + roomNumber + ".txt");
 	} else if (openUp && openRight && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRightLeft/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openUpRightLeft/" + roomNumber + ".txt");
 	} else if (openUp && openDown && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpDownLeft/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openUpDownLeft/" + roomNumber + ".txt");
 	} else if (openRight && openDown && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightDownLeft/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openRightDownLeft/" + roomNumber + ".txt");
 	} else if (openUp && openRight) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpRight/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openUpRight/" + roomNumber + ".txt");
 	} else if (openUp && openDown) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpDown/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openUpDown/" + roomNumber + ".txt");
 	} else if (openRight && openDown) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightDown/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openRightDown/" + roomNumber + ".txt");
 	} else if (openUp && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUpLeft/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openUpLeft/" + roomNumber + ".txt");
 	} else if (openRight && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openRightLeft/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openRightLeft/" + roomNumber + ".txt");
 	} else if (openDown && openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openDownLeft/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openDownLeft/" + roomNumber + ".txt");
 	} else if (openUp) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openUp/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openUp/" + roomNumber + ".txt");
 	} else if (openRight) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openRight/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openRight/" + roomNumber + ".txt");
 	} else if (openDown) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openDown/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openDown/" + roomNumber + ".txt");
 	} else if (openLeft) {
-	    roomLoader.loadRoomFile("res/dungeon/rooms/openLeft/" + roomNumber + ".txt");
+	    roomLoader.loadRoomFile("/dungeon/rooms/openLeft/" + roomNumber + ".txt");
 	} else {
 	    return;
 	}

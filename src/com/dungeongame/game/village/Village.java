@@ -31,13 +31,13 @@ public class Village extends GameState {
     private Door door;
 
     // Variables for loading solid tiles
-    private final String path = "res/village/village.txt";
+    private final String path = "/village/village.txt";
 
     public Village(GameStateManager gsm) {
 	super(gsm);
 	villageBottomLayer = new Sprite("/village/villageBottomLayer.png");
 	villageTopLayer = new Sprite("/village/villageTopLayer.png");
-	
+
 	objects = new Layer();
 	player = new Player(360, 400, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player", objects);
 	door = new Door(400, 36, 32, 18, player, Door.DUNGEON, this);
@@ -69,7 +69,7 @@ public class Village extends GameState {
 	// TODO Auto-generated method stub
 	// objects.render(gc);
 	screen.drawSprite(villageBottomLayer, 0, 0, false, false);
-	//objects.render(gc);
+	// objects.render(gc);
 	player.render(gc);
 	screen.drawSprite(villageTopLayer, 0, 0, false, false);
 	door.render(gc);
@@ -90,19 +90,16 @@ public class Village extends GameState {
     private void loadSolidTiles() {
 	System.out.println("load tiles");
 	Scanner scanner;
-	try {
-	    scanner = new Scanner(new File(path));
-	    int width = scanner.nextInt();
-	    int height = scanner.nextInt();
+	// Change this to getResourceAsStream();
+	scanner = new Scanner(getClass().getResourceAsStream(path));
+	int width = scanner.nextInt();
+	int height = scanner.nextInt();
 
-	    for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-		    if (scanner.nextInt() == 1)
-			objects.addObject(new Tile(x * 16, y * 16, 16, 16, "solid"));
-		}
+	for (int y = 0; y < height; y++) {
+	    for (int x = 0; x < width; x++) {
+		if (scanner.nextInt() == 1)
+		    objects.addObject(new Tile(x * 16, y * 16, 16, 16, "solid"));
 	    }
-	} catch (FileNotFoundException e) {
-	    e.printStackTrace();
 	}
 
     }
@@ -111,9 +108,7 @@ public class Village extends GameState {
     public void changeState(GameState gameState) {
 	bgm.stop();
 	gsm.setState(gameState);
-	
+
     }
-    
-    
 
 }

@@ -43,12 +43,7 @@ public class RoomLoader {
     }
 
     public void loadRoomFile(String path) {
-	try {
-	    scanner = new Scanner(new File(path));
-	} catch (FileNotFoundException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+	scanner = new Scanner(getClass().getResourceAsStream(path));
     }
 
     public void readRoomFile(int roomX, int roomY, Layer objects) {

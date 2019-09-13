@@ -14,6 +14,10 @@ public class GameApplet extends Applet{
     
     private GameContainer gc = new GameContainer(DungeonGame.WIDTH, DungeonGame.HEIGHT, DungeonGame.SCALE, DungeonGame.TITLE, new DungeonGame(), true);
     
+    public GameApplet() {
+	System.out.println("hello");
+    }
+    
     public void init() {
 	Dimension s = new Dimension(DungeonGame.WIDTH * DungeonGame.SCALE, DungeonGame.HEIGHT * DungeonGame.SCALE);
 	setPreferredSize(s);
