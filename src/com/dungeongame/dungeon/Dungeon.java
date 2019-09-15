@@ -13,6 +13,7 @@ import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
 import com.mikejack.gamestate.GameState;
 import com.mikejack.gamestate.GameStateManager;
+import com.mikejack.graphics.Light;
 import com.mikejack.objects.Layer;
 
 /*
@@ -40,6 +41,7 @@ public class Dungeon extends GameState {
 
     private int startRoom = 0, endRoom = 0;
 
+
     public Dungeon(GameStateManager gsm) {
 	super(gsm);
 	content = new DungeonContent();
@@ -53,21 +55,23 @@ public class Dungeon extends GameState {
 
 	// Initialize the rooms
 	for (int i = 0; i < rooms.length; i++) {
-	    rooms[i] = new Room((i % DUNGEON_SIZE) * Room.WIDTH, (i / DUNGEON_SIZE) * Room.TILE_SIZE * (Room.HEIGHT / Room.TILE_SIZE), false,
-		    false, false, false);
+	    rooms[i] = new Room((i % DUNGEON_SIZE) * Room.WIDTH,
+		    (i / DUNGEON_SIZE) * Room.TILE_SIZE * (Room.HEIGHT / Room.TILE_SIZE), false, false, false, false);
 	}
 	generateDungeon();
 	// Load player and camera
 	int startX = rooms[startRoom].getX() + Room.WIDTH / 2 - Player.PLAYER_WIDTH / 2;
 	int startY = rooms[startRoom].getY() + Room.HEIGHT / 2 - Player.PLAYER_HEIGHT / 2;
-	player.setX(startX);
-	player.setY(startY);
+	player.setX(100);
+	player.setY(100);
 	camera = new Camera(player, DUNGEON_SIZE * Room.WIDTH, DUNGEON_SIZE * Room.HEIGHT);
 
 	playerUI = new PlayerUI(player);
 
+	Screen.setAmbientLight(0xff555555);
+
 	bgm = new AudioClip("/dungeon/music/runic-melody.wav");
-	bgm.loop();
+	// bgm.loop();
     }
 
     public void update(GameContainer gc) {
@@ -106,7 +110,8 @@ public class Dungeon extends GameState {
 
 	System.out.println("END ROOM: " + endRoom);
 	System.out.println("EXIT POS:\t X: " + rooms[endRoom].getX() + 100 + "\t Y: " + rooms[endRoom].getY() + 100);
-	objects.addObject(new Door(rooms[endRoom].getX() + 100, rooms[endRoom].getY() + 100, 16, 16, player, Door.VILLAGE, this));
+	objects.addObject(
+		new Door(rooms[endRoom].getX() + 100, rooms[endRoom].getY() + 100, 16, 16, player, Door.VILLAGE, this));
     }
 
     private void generateCriticalPath() {
@@ -150,7 +155,7 @@ public class Dungeon extends GameState {
 		currentRoom++;
 	    } else if (nextDir == MOVE_DOWN) {
 		// If we are in the bottom row of rooms make the current room the end room
-		if (currentRoom >= DUNGEON_SIZE*(DUNGEON_SIZE-1)) {
+		if (currentRoom >= DUNGEON_SIZE * (DUNGEON_SIZE - 1)) {
 		    endRoom = currentRoom;
 		    break;
 		}
@@ -205,7 +210,7 @@ public class Dungeon extends GameState {
 		rooms[i].setOpenUp(false);
 	}
 	// Bottom rooms
-	for (int i = DUNGEON_SIZE*(DUNGEON_SIZE-1); i < rooms.length; i++) {
+	for (int i = DUNGEON_SIZE * (DUNGEON_SIZE - 1); i < rooms.length; i++) {
 	    if (rooms[i].isOpenDown())
 		rooms[i].setOpenDown(false);
 	}
@@ -215,7 +220,7 @@ public class Dungeon extends GameState {
 		rooms[i].setOpenLeft(false);
 	}
 	// Right rooms
-	for (int i = DUNGEON_SIZE-1; i < rooms.length; i += DUNGEON_SIZE) {
+	for (int i = DUNGEON_SIZE - 1; i < rooms.length; i += DUNGEON_SIZE) {
 	    if (rooms[i].isOpenRight())
 		rooms[i].setOpenRight(false);
 	}
@@ -265,7 +270,7 @@ public class Dungeon extends GameState {
     public void changeState(GameState gameState) {
 	bgm.stop();
 	gsm.setState(gameState);
-	
+
     }
 
 }

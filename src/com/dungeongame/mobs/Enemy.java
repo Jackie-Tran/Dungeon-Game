@@ -1,5 +1,6 @@
 package com.dungeongame.mobs;
 
+import com.mikejack.audio.AudioClip;
 import com.mikejack.objects.Layer;
 
 public abstract class Enemy extends Mob{
@@ -16,6 +17,9 @@ public abstract class Enemy extends Mob{
 		this.player = player;
 		xc = (int) (x + width/2);
 		yc = (int) (y + height/2);
+		
+		// Resources
+		deathSound = new AudioClip("/dungeon/monsters/sfx/monster_death.wav");
 	}
 
 	@Override

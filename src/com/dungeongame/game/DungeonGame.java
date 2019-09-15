@@ -1,6 +1,6 @@
 package com.dungeongame.game;
 
-import com.dungeongame.game.village.Village;
+import com.dungeongame.dungeon.Dungeon;
 import com.mikejack.engine.AbstractGame;
 import com.mikejack.engine.GameContainer;
 import com.mikejack.engine.Screen;
@@ -20,7 +20,7 @@ public class DungeonGame extends AbstractGame{
     
     public DungeonGame() {
 	gsm = new GameStateManager();
-	gsm.setState(new MainMenu(gsm));
+	gsm.setState(new Dungeon(gsm));
     }
 
     @Override

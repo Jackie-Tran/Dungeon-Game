@@ -1,4 +1,4 @@
-package com.mikejack.engine;
+package com.dungeongame.game;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
-import com.dungeongame.game.DungeonGame;
+import com.mikejack.engine.GameContainer;
 
 public class GameApplet extends Applet{
     

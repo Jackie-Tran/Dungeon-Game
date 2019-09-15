@@ -102,6 +102,7 @@ public class Sword extends Weapon {
 	target.setHealth(target.getHealth() - damage);
 
 	if (target.getHealth() <= 0) {
+	    target.getDeathSound().play();
 	    objects.removeObject(target);
 	    return;
 	}

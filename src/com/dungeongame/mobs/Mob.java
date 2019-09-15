@@ -1,5 +1,6 @@
 package com.dungeongame.mobs;
 
+import com.mikejack.audio.AudioClip;
 import com.mikejack.graphics.Sprite;
 import com.mikejack.objects.GameObject;
 import com.mikejack.objects.Layer;
@@ -13,6 +14,8 @@ public abstract class Mob extends GameObject{
     
     protected float collisionX, collisionY;
     protected int collisionWidth, collisionHeight;
+    
+    protected AudioClip deathSound;
     
     public Mob(float x, float y, int width, int height, String tag, Layer objects, Sprite sprite) {
 	super(x, y, width, height, tag, sprite);
@@ -68,6 +71,14 @@ public abstract class Mob extends GameObject{
 
     public void setMoveSpeed(float moveSpeed) {
         this.moveSpeed = moveSpeed;
+    }
+
+    public AudioClip getDeathSound() {
+        return deathSound;
+    }
+
+    public void setDeathSound(AudioClip deathSound) {
+        this.deathSound = deathSound;
     }
 
 
